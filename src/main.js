@@ -8,7 +8,10 @@ const path = require('path');
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
   app.quit();
 }
-
+import '../src/db/dbaccess';
+import dbaccess from '../src/db/dbaccess';
+global.db = new dbaccess();
+console.log(global.db);
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({

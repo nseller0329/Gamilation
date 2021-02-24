@@ -87,6 +87,424 @@ module.exports =
 /************************************************************************/
 /******/ ({
 
+/***/ "./node_modules/better-sqlite3/lib/aggregate.js":
+/*!******************************************************!*\
+  !*** ./node_modules/better-sqlite3/lib/aggregate.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+const { getBooleanOption } = __webpack_require__(/*! ./util */ "./node_modules/better-sqlite3/lib/util.js");
+
+module.exports = (createAggregate) => {
+	return function defineAggregate(name, options) {
+		if (typeof name !== 'string') throw new TypeError('Expected first argument to be a string');
+		if (typeof options !== 'object' || options === null) throw new TypeError('Expected second argument to be an options object');
+		if (!name) throw new TypeError('User-defined function name cannot be an empty string');
+
+		const start = 'start' in options ? options.start : null;
+		const step = getFunctionOption(options, 'step', true);
+		const inverse = getFunctionOption(options, 'inverse', false);
+		const result = getFunctionOption(options, 'result', false);
+		const safeIntegers = 'safeIntegers' in options ? +getBooleanOption(options, 'safeIntegers') : 2;
+		const deterministic = getBooleanOption(options, 'deterministic');
+		const varargs = getBooleanOption(options, 'varargs');
+		let argCount = -1;
+
+		if (!varargs) {
+			argCount = Math.max(getLength(step), inverse ? getLength(inverse) : 0);
+			if (argCount > 0) argCount -= 1;
+			if (argCount > 100) throw new RangeError('User-defined functions cannot have more than 100 arguments');
+		}
+
+		return createAggregate.call(this, start, step, inverse, result, name, argCount, safeIntegers, deterministic);
+	};
+};
+
+const getFunctionOption = (options, key, required) => {
+	const value = key in options ? options[key] : null;
+	if (typeof value === 'function') return value;
+	if (value != null) throw new TypeError(`Expected the "${key}" option to be a function`);
+	if (required) throw new TypeError(`Missing required option "${key}"`);
+	return null;
+};
+
+const getLength = ({ length }) => {
+	if (Number.isInteger(length) && length >= 0) return length;
+	throw new TypeError('Expected function.length to be a positive integer');
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/better-sqlite3/lib/backup.js":
+/*!***************************************************!*\
+  !*** ./node_modules/better-sqlite3/lib/backup.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+const fs = __webpack_require__(/*! fs */ "fs");
+const path = __webpack_require__(/*! path */ "path");
+const { promisify } = __webpack_require__(/*! util */ "util");
+
+const fsAccess = promisify(fs.access);
+
+module.exports = (createBackup) => {
+	return async function backup(filename, options) {
+		if (options == null) options = {};
+		if (typeof filename !== 'string') throw new TypeError('Expected first argument to be a string');
+		if (typeof options !== 'object') throw new TypeError('Expected second argument to be an options object');
+
+		filename = filename.trim();
+		if (!filename) throw new TypeError('Backup filename cannot be an empty string');
+		if (filename === ':memory:') throw new TypeError('Invalid backup filename ":memory:"');
+
+		const attachedName = 'attached' in options ? options.attached : 'main';
+		const handler = 'progress' in options ? options.progress : null;
+
+		if (typeof attachedName !== 'string') throw new TypeError('Expected the "attached" option to be a string');
+		if (!attachedName) throw new TypeError('The "attached" option cannot be an empty string');
+		if (handler != null && typeof handler !== 'function') throw new TypeError('Expected the "progress" option to be a function');
+
+		await fsAccess(path.dirname(filename)).catch(() => {
+			throw new TypeError('Cannot save backup because the directory does not exist');
+		});
+
+		const newFile = await fsAccess(filename).then(() => false, () => true);
+		return runBackup(createBackup.call(this, attachedName, filename, newFile), handler || null);
+	};
+};
+
+const runBackup = (backup, handler) => {
+	let rate = 0;
+	let useDefault = true;
+
+	return new Promise((resolve, reject) => {
+		setImmediate(function step() {
+			try {
+				const progress = backup.transfer(rate);
+				if (!progress.remainingPages) {
+					backup.close();
+					resolve(progress);
+					return;
+				}
+				if (useDefault) {
+					useDefault = false;
+					rate = 100;
+				}
+				if (handler) {
+					const ret = handler(progress);
+					if (ret !== undefined) {
+						if (typeof ret === 'number' && ret === ret) rate = Math.max(0, Math.min(0x7fffffff, Math.round(ret)));
+						else throw new TypeError('Expected progress callback to return a number or undefined');
+					}
+				}
+				setImmediate(step);
+			} catch (err) {
+				backup.close();
+				reject(err);
+			}
+		});
+	});
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/better-sqlite3/lib/database.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/better-sqlite3/lib/database.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+const fs = __webpack_require__(/*! fs */ "fs");
+const path = __webpack_require__(/*! path */ "path");
+const util = __webpack_require__(/*! ./util */ "./node_modules/better-sqlite3/lib/util.js");
+
+const {
+	Database: CPPDatabase,
+	setErrorConstructor,
+} = require(( false ? undefined : "I:\\Source\\Web\\Gamilation-Electron\\.webpack\\main") + '/native_modules//build/Release/better_sqlite3.node');
+
+function Database(filenameGiven, options) {
+	if (filenameGiven == null) filenameGiven = '';
+	if (options == null) options = {};
+	if (typeof filenameGiven !== 'string') throw new TypeError('Expected first argument to be a string');
+	if (typeof options !== 'object') throw new TypeError('Expected second argument to be an options object');
+	if ('readOnly' in options) throw new TypeError('Misspelled option "readOnly" should be "readonly"');
+	if ('memory' in options) throw new TypeError('Option "memory" was removed in v7.0.0 (use ":memory:" filename instead)');
+
+	const filename = filenameGiven.trim();
+	const anonymous = filename === '' || filename === ':memory:';
+	const readonly = util.getBooleanOption(options, 'readonly');
+	const fileMustExist = util.getBooleanOption(options, 'fileMustExist');
+	const timeout = 'timeout' in options ? options.timeout : 5000;
+	const verbose = 'verbose' in options ? options.verbose : null;
+
+	if (readonly && anonymous) throw new TypeError('In-memory/temporary databases cannot be readonly');
+	if (!Number.isInteger(timeout) || timeout < 0) throw new TypeError('Expected the "timeout" option to be a positive integer');
+	if (timeout > 0x7fffffff) throw new RangeError('Option "timeout" cannot be greater than 2147483647');
+	if (verbose != null && typeof verbose !== 'function') throw new TypeError('Expected the "verbose" option to be a function');
+
+	if (!anonymous && !fs.existsSync(path.dirname(filename))) {
+		throw new TypeError('Cannot open database because the directory does not exist');
+	}
+	return new CPPDatabase(filename, filenameGiven, anonymous, readonly, fileMustExist, timeout, verbose || null);
+}
+
+setErrorConstructor(__webpack_require__(/*! ./sqlite-error */ "./node_modules/better-sqlite3/lib/sqlite-error.js"));
+util.wrap(CPPDatabase, 'pragma', __webpack_require__(/*! ./pragma */ "./node_modules/better-sqlite3/lib/pragma.js"));
+util.wrap(CPPDatabase, 'function', __webpack_require__(/*! ./function */ "./node_modules/better-sqlite3/lib/function.js"));
+util.wrap(CPPDatabase, 'aggregate', __webpack_require__(/*! ./aggregate */ "./node_modules/better-sqlite3/lib/aggregate.js"));
+util.wrap(CPPDatabase, 'backup', __webpack_require__(/*! ./backup */ "./node_modules/better-sqlite3/lib/backup.js"));
+CPPDatabase.prototype.transaction = __webpack_require__(/*! ./transaction */ "./node_modules/better-sqlite3/lib/transaction.js");
+CPPDatabase.prototype.constructor = Database;
+Database.prototype = CPPDatabase.prototype;
+module.exports = Database;
+
+
+/***/ }),
+
+/***/ "./node_modules/better-sqlite3/lib/function.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/better-sqlite3/lib/function.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+const { getBooleanOption } = __webpack_require__(/*! ./util */ "./node_modules/better-sqlite3/lib/util.js");
+
+module.exports = (createFunction) => {
+	return function defineFunction(name, options, fn) {
+		if (options == null) options = {};
+		if (typeof options === 'function') { fn = options; options = {}; }
+		if (typeof name !== 'string') throw new TypeError('Expected first argument to be a string');
+		if (typeof fn !== 'function') throw new TypeError('Expected last argument to be a function');
+		if (typeof options !== 'object') throw new TypeError('Expected second argument to be an options object');
+		if (!name) throw new TypeError('User-defined function name cannot be an empty string');
+
+		const safeIntegers = 'safeIntegers' in options ? +getBooleanOption(options, 'safeIntegers') : 2;
+		const deterministic = getBooleanOption(options, 'deterministic');
+		const varargs = getBooleanOption(options, 'varargs');
+		let argCount = -1;
+
+		if (!varargs) {
+			argCount = fn.length;
+			if (!Number.isInteger(argCount) || argCount < 0) throw new TypeError('Expected function.length to be a positive integer');
+			if (argCount > 100) throw new RangeError('User-defined functions cannot have more than 100 arguments');
+		}
+
+		return createFunction.call(this, fn, name, argCount, safeIntegers, deterministic);
+	};
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/better-sqlite3/lib/index.js":
+/*!**************************************************!*\
+  !*** ./node_modules/better-sqlite3/lib/index.js ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+module.exports = __webpack_require__(/*! ./database */ "./node_modules/better-sqlite3/lib/database.js");
+module.exports.SqliteError = __webpack_require__(/*! ./sqlite-error */ "./node_modules/better-sqlite3/lib/sqlite-error.js");
+
+
+/***/ }),
+
+/***/ "./node_modules/better-sqlite3/lib/pragma.js":
+/*!***************************************************!*\
+  !*** ./node_modules/better-sqlite3/lib/pragma.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+const { getBooleanOption } = __webpack_require__(/*! ./util */ "./node_modules/better-sqlite3/lib/util.js");
+
+module.exports = (setPragmaMode) => {
+	return function pragma(source, options) {
+		if (options == null) options = {};
+		if (typeof source !== 'string') throw new TypeError('Expected first argument to be a string');
+		if (typeof options !== 'object') throw new TypeError('Expected second argument to be an options object');
+		const simple = getBooleanOption(options, 'simple');
+
+		let stmt;
+		setPragmaMode.call(this, true);
+		try {
+			stmt = this.prepare(`PRAGMA ${source}`);
+		} finally {
+			setPragmaMode.call(this, false);
+		}
+		return simple ? stmt.pluck().get() : stmt.all();
+	};
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/better-sqlite3/lib/sqlite-error.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/better-sqlite3/lib/sqlite-error.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+const descriptor = { value: 'SqliteError', writable: true, enumerable: false, configurable: true };
+
+function SqliteError(message, code) {
+	if (new.target !== SqliteError) {
+		return new SqliteError(message, code);
+	}
+	if (typeof code !== 'string') {
+		throw new TypeError('Expected second argument to be a string');
+	}
+	Error.call(this, message);
+	descriptor.value = '' + message;
+	Object.defineProperty(this, 'message', descriptor);
+	Error.captureStackTrace(this, SqliteError);
+	descriptor.value = code;
+	Object.defineProperty(this, 'code', descriptor);
+}
+Object.setPrototypeOf(SqliteError, Error);
+Object.setPrototypeOf(SqliteError.prototype, Error.prototype);
+Object.defineProperty(SqliteError.prototype, 'name', descriptor);
+module.exports = SqliteError;
+
+
+/***/ }),
+
+/***/ "./node_modules/better-sqlite3/lib/transaction.js":
+/*!********************************************************!*\
+  !*** ./node_modules/better-sqlite3/lib/transaction.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+const controllers = new WeakMap;
+
+module.exports = function transaction(fn) {
+	if (typeof fn !== 'function') throw new TypeError('Expected first argument to be a function');
+	const controller = getController(this);
+	const { apply } = Function.prototype;
+
+	const properties = {
+		default: { value: wrapTransaction(apply, fn, this, controller.default) },
+		deferred: { value: wrapTransaction(apply, fn, this, controller.deferred) },
+		immediate: { value: wrapTransaction(apply, fn, this, controller.immediate) },
+		exclusive: { value: wrapTransaction(apply, fn, this, controller.exclusive) },
+		database: { value: this, enumerable: true },
+	};
+
+	Object.defineProperties(properties.default.value, properties);
+	Object.defineProperties(properties.deferred.value, properties);
+	Object.defineProperties(properties.immediate.value, properties);
+	Object.defineProperties(properties.exclusive.value, properties);
+
+	return properties.default.value;
+};
+
+const getController = (db) => {
+	let controller = controllers.get(db);
+	if (!controller) {
+		const shared = {
+			commit: db.prepare('COMMIT'),
+			rollback: db.prepare('ROLLBACK'),
+			savepoint: db.prepare('SAVEPOINT `\t_bs3.\t`'),
+			release: db.prepare('RELEASE `\t_bs3.\t`'),
+			rollbackTo: db.prepare('ROLLBACK TO `\t_bs3.\t`'),
+		};
+		controllers.set(db, controller = {
+			default: Object.assign({ begin: db.prepare('BEGIN') }, shared),
+			deferred: Object.assign({ begin: db.prepare('BEGIN DEFERRED') }, shared),
+			immediate: Object.assign({ begin: db.prepare('BEGIN IMMEDIATE') }, shared),
+			exclusive: Object.assign({ begin: db.prepare('BEGIN EXCLUSIVE') }, shared),
+		});
+	}
+	return controller;
+};
+
+const wrapTransaction = (apply, fn, db, { begin, commit, rollback, savepoint, release, rollbackTo }) => function sqliteTransaction() {
+	let before, after, undo;
+	if (db.inTransaction) {
+		before = savepoint;
+		after = release;
+		undo = rollbackTo;
+	} else {
+		before = begin;
+		after = commit;
+		undo = rollback;
+	}
+	before.run();
+	try {
+		const result = apply.call(fn, this, arguments);
+		after.run();
+		return result;
+	} catch (ex) {
+		if (db.inTransaction) {
+			undo.run();
+			if (undo !== rollback) after.run();
+		}
+		throw ex;
+	}
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/better-sqlite3/lib/util.js":
+/*!*************************************************!*\
+  !*** ./node_modules/better-sqlite3/lib/util.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+const wrappedMethods = new WeakSet();
+
+exports.getBooleanOption = (options, key) => {
+	let value = false;
+	if (key in options && typeof (value = options[key]) !== 'boolean') {
+		throw new TypeError(`Expected the "${key}" option to be a boolean`);
+	}
+	return value;
+};
+
+exports.wrap = (Class, methodName, wrapper) => {
+	const originalMethod = Class.prototype[methodName];
+	if (typeof originalMethod !== 'function') {
+		throw new TypeError(`Missing method ${methodName}`);
+	}
+	if (!wrappedMethods.has(originalMethod)) {
+		const wrapped = wrapper(originalMethod);
+		wrappedMethods.add(wrapped);
+		Class.prototype[methodName] = wrapped;
+	}
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/debug/src/browser.js":
 /*!*******************************************!*\
   !*** ./node_modules/debug/src/browser.js ***!
@@ -1321,13 +1739,129 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./src/db/dbaccess.js":
+/*!****************************!*\
+  !*** ./src/db/dbaccess.js ***!
+  \****************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var better_sqlite3__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! better-sqlite3 */ "./node_modules/better-sqlite3/lib/index.js");
+/* harmony import */ var better_sqlite3__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(better_sqlite3__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _db_schema__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../db/schema */ "./src/db/schema.js");
+/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! path */ "path");
+/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(path__WEBPACK_IMPORTED_MODULE_2__);
+
+
+
+const dbPath = path__WEBPACK_IMPORTED_MODULE_2___default.a.resolve(__dirname, 'gamilation.db');
+class dbaccess {
+    constructor() {
+        this.db = new better_sqlite3__WEBPACK_IMPORTED_MODULE_0___default.a(dbPath, {
+            verbose: console.log
+        });
+        this.schema = _db_schema__WEBPACK_IMPORTED_MODULE_1__["default"];
+    }
+    getAllRows(table) {
+        var query = `SELECT * FROM ${table}`,
+            sql = this.db.prepare(query);
+        const rows = sql.all();
+        return rows;
+    }
+    getRowItem(table, IdField, params = []) {
+        var query = `SELECT * FROM ${table} WHERE ${IdField}= ?`,
+            sql = this.db.prepare(query);
+        const row = sql.get(params);
+        return row;
+    }
+    addRowItems(table, fields, rows, callback) {
+        var allfields = fields.map((field) => field).join(','),
+            allvalues = fields.map((field) => '@' + field).join(','),
+            query = `INSERT INTO ${table}(${allfields}) VALUES (${allvalues})`,
+            sql = this.db.prepare(query);
+        const insertRows = this.db.transaction(function (rows) {
+            for (const row of rows) sql.run(row);
+            if (typeof callback === "function") {
+                callback();
+            }
+        });
+        insertRows(rows);
+    }
+    updateRowItem(table, IdField, data, params = [], callback) {
+        var updatefields = [],
+            query, sql;
+        for (var index in data) {
+            if (data[index]) {
+                updatefields.push(index + " = '" + data[index] + "'");
+            }
+        }
+        updatefields = updatefields.map((field) => field).join(',');
+        query = `UPDATE ${table} SET ${updatefields} WHERE ${IdField} = ?`;
+        sql = this.db.prepare(query);
+        sql.run(params);
+        if (typeof callback === "function") {
+            callback();
+        }
+    }
+    runCustomSql(query, method, params = []) {
+        var sql = this.db.prepare(query),
+            data;
+        switch (method) {
+            case 'all':
+                data = sql.all(params);
+                break;
+
+            case 'get':
+                data = sql.get(params);
+                break;
+            case 'run':
+            default:
+                break;
+        }
+
+        return data;
+    }
+    closeDBConnection() {
+        this.db.close();
+    }
+} //data access object
+
+/* harmony default export */ __webpack_exports__["default"] = (dbaccess);
+
+/***/ }),
+
+/***/ "./src/db/schema.js":
+/*!**************************!*\
+  !*** ./src/db/schema.js ***!
+  \**************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var schema = {
+    Game: {
+        fields: ["ItemID", "Media_Type", "Media_Format", "Name", "Platform", "Client", "Genre", "Status"],
+        idField: "ItemID"
+    }
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (schema);
+
+/***/ }),
+
 /***/ "./src/main.js":
 /*!*********************!*\
   !*** ./src/main.js ***!
   \*********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _src_db_dbaccess__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../src/db/dbaccess */ "./src/db/dbaccess.js");
 const {
   app,
   BrowserWindow
@@ -1339,13 +1873,15 @@ if (__webpack_require__(/*! electron-squirrel-startup */ "./node_modules/electro
   app.quit();
 }
 
+
+global.db = new _src_db_dbaccess__WEBPACK_IMPORTED_MODULE_0__["default"]();
+console.log(global.db);
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
-      preload: 'I:\\Source\\Web\\Gamilation-Electron\\.webpack\\renderer\\main_window\\preload.js',
       enableRemoteModule: true,
     }
   });
@@ -1405,6 +1941,17 @@ module.exports = require("child_process");
 /***/ (function(module, exports) {
 
 module.exports = require("electron");
+
+/***/ }),
+
+/***/ "fs":
+/*!*********************!*\
+  !*** external "fs" ***!
+  \*********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("fs");
 
 /***/ }),
 
