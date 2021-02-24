@@ -1345,7 +1345,7 @@ const createWindow = () => {
     width: 800,
     height: 600,
     webPreferences: {
-      preload: 'I:\\Source\\Web\\Gamilation\\.webpack\\renderer\\main_window\\preload.js',
+      preload: 'I:\\Source\\Web\\Gamilation-Electron\\.webpack\\renderer\\main_window\\preload.js',
       enableRemoteModule: true,
     }
   });
