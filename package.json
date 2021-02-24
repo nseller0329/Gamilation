@@ -51,10 +51,7 @@
               "entryPoints": [{
                 "html": "./src/dashboard/index.html",
                 "js": "./src/dashboard/renderer.js",
-                "name": "main_window",
-                "preload": {
-                  "js": "./src/dashboard/preload.js"
-                }
+                "name": "main_window"
               }]
             }
           }
