@@ -1,4 +1,3 @@
-const webpack = require('webpack');
 const copyPlugin = require('copy-webpack-plugin');
 const assets = ['gamilation.db'];
 const path = require('path');
@@ -19,6 +18,7 @@ module.exports = {
         to: path.resolve(__dirname, '.webpack/main', asset)
       }]
     });
-  })
+  }),
+
 
 };

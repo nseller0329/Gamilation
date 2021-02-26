@@ -1,4 +1,5 @@
 const rules = require('./webpack.rules');
+
 rules.push({
   test: /\.css$/,
   use: [{
@@ -23,4 +24,5 @@ module.exports = {
   module: {
     rules,
   },
+
 };

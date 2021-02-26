@@ -1864,7 +1864,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _src_db_dbaccess__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../src/db/dbaccess */ "./src/db/dbaccess.js");
 const {
   app,
-  BrowserWindow
+  BrowserWindow,
+  ipcMain
 } = __webpack_require__(/*! electron */ "electron");
 const path = __webpack_require__(/*! path */ "path");
 
@@ -1873,32 +1874,37 @@ if (__webpack_require__(/*! electron-squirrel-startup */ "./node_modules/electro
   app.quit();
 }
 
+const db = new _src_db_dbaccess__WEBPACK_IMPORTED_MODULE_0__["default"]();
 
-global.db = new _src_db_dbaccess__WEBPACK_IMPORTED_MODULE_0__["default"]();
-console.log(global.db.getAllRows('games'));
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    backgroundColor: '#FFF',
     webPreferences: {
-      enableRemoteModule: true,
+      preload: 'I:\\Source\\Web\\Gamilation-Electron\\.webpack\\renderer\\main_window\\preload.js',
     }
   });
-
   // and load the index.html of the app.
-
   mainWindow.loadURL('http://localhost:3000/main_window');
-
-
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
-};
 
+};
+const createIPCs = function () {
+  ipcMain.handle('get-data', (event, table, process) => {
+    const data = db[process](table);
+    return data;
+  });
+};
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on('ready', function () {
+  createWindow();
+  createIPCs();
+});
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
@@ -1906,6 +1912,7 @@ app.on('ready', createWindow);
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
+    db.closeDBConnection();
   }
 });
 

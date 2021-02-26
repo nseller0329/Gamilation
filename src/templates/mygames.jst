@@ -1,0 +1,9 @@
+<h1> My Games</h1>
+<%for (var i=0;i < games.length;i++){%>
+<div class="card" style="width: 18rem;">
+    <img src="<%=coverImg%>" class="card-img-top" alt="#">
+    <div class="card-body">
+        <p class="card-text"><%=games[i].Name%></p>
+    </div>
+</div>
+<%}%>

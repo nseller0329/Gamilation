@@ -1,6 +1,7 @@
 const {
   app,
-  BrowserWindow
+  BrowserWindow,
+  ipcMain
 } = require('electron');
 const path = require('path');
 
@@ -8,33 +9,38 @@ const path = require('path');
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
   app.quit();
 }
-import '../src/db/dbaccess';
 import dbaccess from '../src/db/dbaccess';
-global.db = new dbaccess();
+const db = new dbaccess();
 
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    backgroundColor: '#FFF',
     webPreferences: {
-      enableRemoteModule: true,
+      preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     }
   });
-
   // and load the index.html of the app.
-
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
-
-
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
-};
 
+};
+const createIPCs = function () {
+  ipcMain.handle('get-data', (event, table, process) => {
+    const data = db[process](table);
+    return data;
+  });
+};
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on('ready', function () {
+  createWindow();
+  createIPCs();
+});
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
@@ -42,6 +48,7 @@ app.on('ready', createWindow);
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
+    db.closeDBConnection();
   }
 });
 
