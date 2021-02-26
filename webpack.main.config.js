@@ -1,4 +1,7 @@
 const webpack = require('webpack');
+const copyPlugin = require('copy-webpack-plugin');
+const assets = ['gamilation.db'];
+const path = require('path');
 module.exports = {
   /**
    * This is the main entry point for your application, it's the first file
@@ -9,5 +12,13 @@ module.exports = {
   module: {
     rules: require('./webpack.rules'),
   },
+  plugins: assets.map(asset => {
+    return new copyPlugin({
+      patterns: [{
+        from: path.resolve(__dirname, 'db', asset),
+        to: path.resolve(__dirname, '.webpack/main', asset)
+      }]
+    });
+  })
 
 };

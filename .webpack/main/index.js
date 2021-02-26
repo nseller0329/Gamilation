@@ -1756,10 +1756,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const dbPath = path__WEBPACK_IMPORTED_MODULE_2___default.a.resolve(__dirname, 'gamilation.db');
+const dbPath = ( false ? undefined : "I:\\Source\\Web\\Gamilation-Electron\\.webpack\\main") + '/native_modules/gamilation.db';
 class dbaccess {
     constructor() {
-        this.db = new better_sqlite3__WEBPACK_IMPORTED_MODULE_0___default.a(dbPath, {
+        this.db = new better_sqlite3__WEBPACK_IMPORTED_MODULE_0___default.a(( false ? undefined : "I:\\Source\\Web\\Gamilation-Electron\\.webpack\\main") + '/native_modules/gamilation.db', {
             verbose: console.log
         });
         this.schema = _db_schema__WEBPACK_IMPORTED_MODULE_1__["default"];
@@ -1875,7 +1875,7 @@ if (__webpack_require__(/*! electron-squirrel-startup */ "./node_modules/electro
 
 
 global.db = new _src_db_dbaccess__WEBPACK_IMPORTED_MODULE_0__["default"]();
-console.log(global.db);
+console.log(global.db.getAllRows('games'));
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({

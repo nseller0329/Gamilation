@@ -11,7 +11,7 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
 import '../src/db/dbaccess';
 import dbaccess from '../src/db/dbaccess';
 global.db = new dbaccess();
-console.log(global.db);
+
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
