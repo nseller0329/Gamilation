@@ -8,6 +8,9 @@ const path = require('path');
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
   app.quit();
 }
+import '../src/db/dbaccess';
+import dbaccess from '../src/db/dbaccess';
+global.db = new dbaccess();
 
 const createWindow = () => {
   // Create the browser window.
@@ -15,7 +18,6 @@ const createWindow = () => {
     width: 800,
     height: 600,
     webPreferences: {
-      preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
       enableRemoteModule: true,
     }
   });

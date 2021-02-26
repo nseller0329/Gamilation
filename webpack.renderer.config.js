@@ -1,7 +1,4 @@
 const rules = require('./webpack.rules');
-const webpack = require('webpack');
-
-
 rules.push({
   test: /\.css$/,
   use: [{
