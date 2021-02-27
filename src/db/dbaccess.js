@@ -15,8 +15,9 @@ class dbaccess {
         const rows = sql.all();
         return rows;
     }
-    getRowItem(table, IdField, params = []) {
-        var query = `SELECT * FROM ${table} WHERE ${IdField}= ?`,
+    getRowItem(table, params = []) {
+        var IdField = schema[table].idField,
+            query = `SELECT * FROM ${table} WHERE ${IdField}= ?`,
             sql = this.db.prepare(query);
         const row = sql.get(params);
         return row;
@@ -34,7 +35,7 @@ class dbaccess {
         });
         insertRows(rows);
     }
-    updateRowItem(table, IdField, data, params = [], callback) {
+    updateRowItem(table, IdField, data, params = []) {
         var updatefields = [],
             query, sql;
         for (var index in data) {
@@ -46,9 +47,6 @@ class dbaccess {
         query = `UPDATE ${table} SET ${updatefields} WHERE ${IdField} = ?`;
         sql = this.db.prepare(query);
         sql.run(params);
-        if (typeof callback === "function") {
-            callback();
-        }
     }
     runCustomSql(query, method, params = []) {
         var sql = this.db.prepare(query),

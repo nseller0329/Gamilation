@@ -4,7 +4,13 @@ const {
   ipcMain
 } = require('electron');
 const path = require('path');
+const isDev = require('electron-is-dev');
 
+if (isDev) {
+  console.log('Running in development');
+} else {
+  console.log('Running in production');
+}
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
   app.quit();
@@ -23,23 +29,47 @@ const createWindow = () => {
     }
   });
   // and load the index.html of the app.
-  mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+  if (isDev) {
+    mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+  }
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
-
+  createMainIPCs(mainWindow);
 };
-const createIPCs = function () {
-  ipcMain.handle('get-data', (event, table, process) => {
-    const data = db[process](table);
+const createModal = (parent, type) => {
+  // Create the browser window.
+  const modal = new BrowserWindow({
+    width: 800,
+    height: 600,
+    backgroundColor: '#FFF',
+    modal: true,
+    parent: parent,
+    frame: false,
+    webPreferences: {
+      preload: MODAL_PRELOAD_WEBPACK_ENTRY,
+    }
+  });
+
+  modal.loadURL(MODAL_WEBPACK_ENTRY + `?type=${type}`);
+  if (isDev) {
+    modal.webContents.openDevTools();
+  }
+};
+const createMainIPCs = function (mainWindow) {
+  ipcMain.handle('get-all-rows', (event, table) => {
+    const data = db.getAllRows(table);
     return data;
   });
+  ipcMain.on('show-modal', function (event, type) {
+    createModal(mainWindow, type);
+  });
+  ipcMain.on('refresh-main', function () {
+    mainWindow.webContents.send('refresh');
+  });
 };
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
+
 app.on('ready', function () {
   createWindow();
-  createIPCs();
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -47,8 +77,8 @@ app.on('ready', function () {
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
-    app.quit();
     db.closeDBConnection();
+    app.quit();
   }
 });
 

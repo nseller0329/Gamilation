@@ -1352,6 +1352,31 @@ formatters.O = function (v) {
 
 /***/ }),
 
+/***/ "./node_modules/electron-is-dev/index.js":
+/*!***********************************************!*\
+  !*** ./node_modules/electron-is-dev/index.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+const electron = __webpack_require__(/*! electron */ "electron");
+
+if (typeof electron === 'string') {
+	throw new TypeError('Not running in an Electron environment!');
+}
+
+const app = electron.app || electron.remote.app;
+
+const isEnvSet = 'ELECTRON_IS_DEV' in process.env;
+const getFromEnv = parseInt(process.env.ELECTRON_IS_DEV, 10) === 1;
+
+module.exports = isEnvSet ? getFromEnv : !app.isPackaged;
+
+
+/***/ }),
+
 /***/ "./node_modules/electron-squirrel-startup/index.js":
 /*!*********************************************************!*\
   !*** ./node_modules/electron-squirrel-startup/index.js ***!
@@ -1770,8 +1795,9 @@ class dbaccess {
         const rows = sql.all();
         return rows;
     }
-    getRowItem(table, IdField, params = []) {
-        var query = `SELECT * FROM ${table} WHERE ${IdField}= ?`,
+    getRowItem(table, params = []) {
+        var IdField = _db_schema__WEBPACK_IMPORTED_MODULE_1__["default"][table].idField,
+            query = `SELECT * FROM ${table} WHERE ${IdField}= ?`,
             sql = this.db.prepare(query);
         const row = sql.get(params);
         return row;
@@ -1789,7 +1815,7 @@ class dbaccess {
         });
         insertRows(rows);
     }
-    updateRowItem(table, IdField, data, params = [], callback) {
+    updateRowItem(table, IdField, data, params = []) {
         var updatefields = [],
             query, sql;
         for (var index in data) {
@@ -1801,9 +1827,6 @@ class dbaccess {
         query = `UPDATE ${table} SET ${updatefields} WHERE ${IdField} = ?`;
         sql = this.db.prepare(query);
         sql.run(params);
-        if (typeof callback === "function") {
-            callback();
-        }
     }
     runCustomSql(query, method, params = []) {
         var sql = this.db.prepare(query),
@@ -1842,7 +1865,7 @@ class dbaccess {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 var schema = {
-    Game: {
+    games: {
         fields: ["ItemID", "Media_Type", "Media_Format", "Name", "Platform", "Client", "Genre", "Status"],
         idField: "ItemID"
     }
@@ -1868,7 +1891,13 @@ const {
   ipcMain
 } = __webpack_require__(/*! electron */ "electron");
 const path = __webpack_require__(/*! path */ "path");
+const isDev = __webpack_require__(/*! electron-is-dev */ "./node_modules/electron-is-dev/index.js");
 
+if (isDev) {
+  console.log('Running in development');
+} else {
+  console.log('Running in production');
+}
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (__webpack_require__(/*! electron-squirrel-startup */ "./node_modules/electron-squirrel-startup/index.js")) { // eslint-disable-line global-require
   app.quit();
@@ -1887,23 +1916,46 @@ const createWindow = () => {
     }
   });
   // and load the index.html of the app.
-  mainWindow.loadURL('http://localhost:3000/main_window');
+  if (isDev) {
+    mainWindow.loadURL('http://localhost:3000/main_window');
+  }
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
-
+  createMainIPCs(mainWindow);
 };
-const createIPCs = function () {
-  ipcMain.handle('get-data', (event, table, process) => {
-    const data = db[process](table);
+const createModal = (parent, type) => {
+  // Create the browser window.
+  const modal = new BrowserWindow({
+    width: 800,
+    height: 600,
+    backgroundColor: '#FFF',
+    modal: true,
+    parent: parent,
+    webPreferences: {
+      preload: 'I:\\Source\\Web\\Gamilation-Electron\\.webpack\\renderer\\modal\\preload.js',
+    }
+  });
+
+  modal.loadURL('http://localhost:3000/modal' + `?type=${type}`);
+  if (isDev) {
+    modal.webContents.openDevTools();
+  }
+};
+const createMainIPCs = function (mainWindow) {
+  ipcMain.handle('get-all-rows', (event, table) => {
+    const data = db.getAllRows(table);
     return data;
   });
+  ipcMain.on('show-modal', function (event, type) {
+    createModal(mainWindow, type);
+  });
+  ipcMain.on('refresh-main', function (event, arg) {
+    mainWindow.webContents.send('refresh');
+  });
 };
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
+
 app.on('ready', function () {
   createWindow();
-  createIPCs();
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -1911,8 +1963,8 @@ app.on('ready', function () {
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
-    app.quit();
     db.closeDBConnection();
+    app.quit();
   }
 });
 
