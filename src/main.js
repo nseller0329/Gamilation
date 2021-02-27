@@ -44,7 +44,7 @@ const createModal = (parent, type) => {
     backgroundColor: '#FFF',
     modal: true,
     parent: parent,
-    frame: false,
+    frame: (isDev) ? true : false,
     webPreferences: {
       preload: MODAL_PRELOAD_WEBPACK_ENTRY,
     }
@@ -57,8 +57,17 @@ const createModal = (parent, type) => {
 };
 const createMainIPCs = function (mainWindow) {
   ipcMain.handle('get-all-rows', (event, table) => {
-    const data = db.getAllRows(table);
-    return data;
+    const allRows = db.getAllRows(table);
+    return allRows;
+  });
+  ipcMain.handle('add-rows', (event, data) => {
+    db.addRowItems(data.form, data.keys, data.rows, function (resp) {
+      if (resp.length) {
+        event.sender.send('notification', 'fail', 'There were some problems!' + resp);
+      } else {
+        event.sender.send('notification', 'success', 'Item(s) successfully added!');
+      }
+    });
   });
   ipcMain.on('show-modal', function (event, type) {
     createModal(mainWindow, type);

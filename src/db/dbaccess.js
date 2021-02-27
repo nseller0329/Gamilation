@@ -26,13 +26,22 @@ class dbaccess {
         var allfields = fields.map((field) => field).join(','),
             allvalues = fields.map((field) => '@' + field).join(','),
             query = `INSERT INTO ${table}(${allfields}) VALUES (${allvalues})`,
-            sql = this.db.prepare(query);
+            sql = this.db.prepare(query),
+            errLog = [];
         const insertRows = this.db.transaction(function (rows) {
-            for (const row of rows) sql.run(row);
-            if (typeof callback === "function") {
-                callback();
+            for (const row of rows) {
+                try {
+                    sql.run(row);
+                } catch (err) {
+                    errLog.push(err);
+                }
             }
         });
+        if (typeof callback === "function") {
+            callback(errLog);
+        }
+
+
         insertRows(rows);
     }
     updateRowItem(table, IdField, data, params = []) {

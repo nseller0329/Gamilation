@@ -18,11 +18,7 @@ const rawgApi = {
     }
 };
 
-
+module.exports = rawgApi;
 /*rawgApi.searchGames('Final Fantasy').then(function (data) {
     console.log(data);
 }); */
-
-rawgApi.getGameById('1').then(function (data) {
-    console.log(data);
-});

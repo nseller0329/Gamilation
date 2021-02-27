@@ -1806,13 +1806,22 @@ class dbaccess {
         var allfields = fields.map((field) => field).join(','),
             allvalues = fields.map((field) => '@' + field).join(','),
             query = `INSERT INTO ${table}(${allfields}) VALUES (${allvalues})`,
-            sql = this.db.prepare(query);
+            sql = this.db.prepare(query),
+            errLog = [];
         const insertRows = this.db.transaction(function (rows) {
-            for (const row of rows) sql.run(row);
-            if (typeof callback === "function") {
-                callback();
+            for (const row of rows) {
+                try {
+                    sql.run(row);
+                } catch (err) {
+                    errLog.push(err);
+                }
             }
         });
+        if (typeof callback === "function") {
+            callback(errLog);
+        }
+
+
         insertRows(rows);
     }
     updateRowItem(table, IdField, data, params = []) {
@@ -1931,6 +1940,7 @@ const createModal = (parent, type) => {
     backgroundColor: '#FFF',
     modal: true,
     parent: parent,
+    frame: (isDev) ? true : false,
     webPreferences: {
       preload: 'I:\\Source\\Web\\Gamilation-Electron\\.webpack\\renderer\\modal\\preload.js',
     }
@@ -1943,13 +1953,22 @@ const createModal = (parent, type) => {
 };
 const createMainIPCs = function (mainWindow) {
   ipcMain.handle('get-all-rows', (event, table) => {
-    const data = db.getAllRows(table);
-    return data;
+    const allRows = db.getAllRows(table);
+    return allRows;
+  });
+  ipcMain.handle('add-rows', (event, data) => {
+    db.addRowItems(data.form, data.keys, data.rows, function (resp) {
+      if (resp.length) {
+        event.sender.send('notification', 'fail', 'There were some problems!' + resp);
+      } else {
+        event.sender.send('notification', 'success', 'Item(s) successfully added!');
+      }
+    });
   });
   ipcMain.on('show-modal', function (event, type) {
     createModal(mainWindow, type);
   });
-  ipcMain.on('refresh-main', function (event, arg) {
+  ipcMain.on('refresh-main', function () {
     mainWindow.webContents.send('refresh');
   });
 };
