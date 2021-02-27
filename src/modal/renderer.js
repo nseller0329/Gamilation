@@ -29,7 +29,6 @@ var modal = {
     setFormListeners: function () {
         console.log(document.getElementById('save'))
         document.getElementById('save').addEventListener('click', function () {
-            console.log('clicked')
             modal.sendData(modal.getFormData());
         });
     },
