@@ -3,7 +3,7 @@ const fetch = require('cross-fetch');
 
 const rawgApi = {
     searchGames: function (searchParam) {
-        return fetch(`https://api.rawg.io/api/games?${key}&search='${searchParam}'&search_exact=true`, {
+        return fetch(`https://api.rawg.io/api/games?${key}&search='${searchParam}'&search_precise=true`, {
             method: 'GET'
         }).then(function (response) {
             return response.json();
