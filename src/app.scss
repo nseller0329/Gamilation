@@ -8,3 +8,9 @@ body {
 .bootstrapped {
   @import '~bootstrap/scss/bootstrap.scss';
 }
+
+#gamesForm {
+  #ClientRow: {
+    display: none;
+  }
+}
