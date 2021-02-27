@@ -3,7 +3,7 @@ const {
   BrowserWindow,
   ipcMain
 } = require('electron');
-const path = require('path');
+require('dotenv').config();
 const isDev = require('electron-is-dev');
 
 if (isDev) {
@@ -15,9 +15,12 @@ if (isDev) {
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
   app.quit();
 }
+import {
+  result
+} from 'underscore';
 import dbaccess from '../src/db/dbaccess';
 const db = new dbaccess();
-
+const rawgApi = require('../src/db/rawg.js');
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -74,6 +77,10 @@ const createMainIPCs = function (mainWindow) {
   });
   ipcMain.on('refresh-main', function () {
     mainWindow.webContents.send('refresh');
+  });
+  ipcMain.handle('api-search', async function (event, game) {
+    const results = await rawgApi.searchGames(game);
+    return results;
   });
 };
 

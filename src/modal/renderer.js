@@ -1,9 +1,6 @@
-import addGame from '../templates/addGame.jst';
 import notification from '../templates/notification.jst';
 import '../dashboard/app.scss';
 import form from './form';
-
-
 
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
@@ -18,8 +15,7 @@ var modal = {
     init: function () {
         switch (modalType) {
             case 'new-game':
-                document.getElementById('modal-body').innerHTML = addGame();
-                form.setFormListeners();
+                form.init('modal-body', modalType);
                 break;
             default:
                 break;
