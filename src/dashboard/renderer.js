@@ -13,7 +13,7 @@ var dashboard = {
                 coverImg: placeholder
             });
         });
-        ipcRenderer.send('show-modal', 'new-game');
+        //    ipcRenderer.send('show-modal', 'new-game');
         dashboard.createIPCs();
     },
     createIPCs: function () {

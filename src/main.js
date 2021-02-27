@@ -15,9 +15,6 @@ if (isDev) {
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
   app.quit();
 }
-import {
-  result
-} from 'underscore';
 import dbaccess from '../src/db/dbaccess';
 const db = new dbaccess();
 const rawgApi = require('../src/db/rawg.js');

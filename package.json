@@ -1,8 +1,8 @@
 {
-  "name": "electron-webpack-template",
-  "productName": "electron-webpack-template",
+  "name": "Gamilation",
+  "productName": "Gamilation",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "Gamilation App",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
@@ -20,8 +20,7 @@
   "config": {
     "forge": {
       "packagerConfig": {},
-      "makers": [
-        {
+      "makers": [{
           "name": "@electron-forge/maker-squirrel",
           "config": {
             "name": "electron-webpack-template"
@@ -49,8 +48,7 @@
             "mainConfig": "./webpack.main.config.js",
             "renderer": {
               "config": "./webpack.renderer.config.js",
-              "entryPoints": [
-                {
+              "entryPoints": [{
                   "html": "./src/dashboard/index.html",
                   "js": "./src/dashboard/renderer.js",
                   "name": "main_window",
