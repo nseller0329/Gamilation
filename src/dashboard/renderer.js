@@ -4,12 +4,16 @@ import 'bootstrap';
 import homeTab from '../templates/home.jst';
 import myGamesTab from "../templates/mygames.jst";
 import notification from '../templates/notification.jst';
+import icons from '../common/iconMap.js';
+
 var dashboard = {
     init: function () {
+        console.log(icons)
         document.getElementById('v-pills-home').innerHTML = homeTab();
         ipcRenderer.invoke('get-all-rows', 'games').then(function (data) {
             document.getElementById('myGamesList').innerHTML = myGamesTab({
                 games: data,
+                statusIcons: icons.statusIcons
             });
 
         });
@@ -29,6 +33,7 @@ var dashboard = {
             ipcRenderer.invoke('get-all-rows', 'games').then(function (data) {
                 document.getElementById('myGamesList').innerHTML = myGamesTab({
                     games: data,
+                    statusIcons: statusIcons
                 });
             });
         });

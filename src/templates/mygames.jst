@@ -2,7 +2,10 @@
 <div class="row">
     <%for (var i=0;i < games.length;i++){%>
     <div class="card">
-        <div class="card-header"><%=games[i].Name%></div>
+        <div class="card-header">
+            <h1><%=games[i].Name%></h1>
+            <span><%=statusIcons[games[i].Status]%></span>
+        </div>
         <div class="card-body">
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">Genre(s): <%=games[i].Genre%>
