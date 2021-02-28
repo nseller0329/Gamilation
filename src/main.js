@@ -56,6 +56,10 @@ const createModal = (parent, type) => {
   if (isDev) {
     modal.webContents.openDevTools();
   }
+  modal.on('close', function () {
+    parent.webContents.send('refresh');
+  });
+
   modal.maximize();
 };
 
@@ -76,17 +80,16 @@ const createMainIPCs = function (mainWindow) {
   ipcMain.on('show-modal', function (event, type) {
     createModal(mainWindow, type);
   });
-  ipcMain.on('refresh-main', function () {
-    mainWindow.webContents.send('refresh');
-  });
+
   ipcMain.handle('api-search', async function (event, game) {
     const results = await rawgApi.searchGames(game);
     return results;
   });
-  ipcMain.handle('getGAndP', function (event) {
+  ipcMain.handle('getLookups', function (event) {
     const data = {
       genres: db.getAllRows('genres'),
-      platforms: db.getAllRows('platforms')
+      platforms: db.getAllRows('platforms'),
+      statuses: db.getAllRows('statuses')
     };
     return data;
   });

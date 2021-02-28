@@ -72,10 +72,10 @@
         <div class='col-sm-8'>
             <select class='form-control' id='Status' name="Status">
                 <option value=''>Select..</option>
-                <option value='Playing'>Playing</option>
-                <option value='Completed'>Completed</option>
-                <option value='Unplayed'>Unplayed</option>
-                <option value='Not Finished'>Not Finished</option>
+                              <%for(var i=0;i<statuses.length;i++){%>
+                    <option value='<%=statuses[i].Name%>'>
+                        <%=statuses[i].Name%></option>
+                    <%}%>
             </select>
         </div>
     </div>

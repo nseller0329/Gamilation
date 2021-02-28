@@ -5,10 +5,11 @@ var form = {
         this.type = type;
         switch (this.type) {
             case 'new-game':
-                ipcRenderer.invoke('getGAndP').then(function (data) {
+                ipcRenderer.invoke('getLookups').then(function (data) {
                     document.getElementById(bodyID).innerHTML = addGame({
                         genres: data.genres,
                         platforms: data.platforms,
+                        statuses: data.statuses
                     });
                     form.setFormListeners();
                 });
@@ -18,18 +19,13 @@ var form = {
                 break;
         }
 
-
-
     },
     setFormListeners: function () {
         document.getElementById('gamesForm').addEventListener('submit', function (e) {
             e.preventDefault();
-            if (f.checkValidity()) {
+            if (e.target.checkValidity()) {
                 form.sendData(form.getFormData());
             }
-        });
-        document.getElementById('Name').addEventListener('keyup', function (e) {
-            form.searchForGameWithApi(e);
         });
         document.getElementById('Genre').addEventListener('keyup', function (e) {
             form.filterSelect(e, "genreList");
@@ -48,21 +44,6 @@ var form = {
 
     },
 
-    searchForGameWithApi: function (e) {
-        var val = e.target.value,
-            datalist = document.getElementById('gamesDataList'),
-            maxResults = 5;
-        if (val.length > 4) {
-            ipcRenderer.invoke('api-search', val).then(function (resp) {
-                datalist.innerHTML = '';
-                for (var i = 0; i < resp.results.length; i++) {
-                    if (i < maxResults) {
-                        datalist.insertAdjacentHTML('afterbegin', '<option data-gameid="' + resp.results[i].id + '" value = "' + resp.results[i].name + '" > ');
-                    }
-                } //show top 5 in suggestions
-            });
-        }
-    },
     toggleDropdown: function (e, toggleElement) {
         var toggle = document.getElementById(toggleElement);
         if (!toggle.classList.contains('show') && e.target.value) {
@@ -120,8 +101,8 @@ var form = {
         return item;
     },
     sendData: function (data) {
-        console.log(data);
-        //  ipcRenderer.invoke('add-rows', data);
+
+        ipcRenderer.invoke('add-rows', data);
     }
 };
 export default form;

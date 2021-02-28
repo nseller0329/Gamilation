@@ -4,15 +4,9 @@ import form from './form';
 import "@fortawesome/fontawesome-free/js/all";
 import 'bootstrap';
 
-
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const modalType = urlParams.get('type');
-
-window.closeModal = function () {
-    ipcRenderer.send('refresh-main');
-    window.close();
-};
 
 var modal = {
     init: function () {

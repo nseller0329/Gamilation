@@ -3,19 +3,18 @@ import "@fortawesome/fontawesome-free/js/all";
 import 'bootstrap';
 import homeTab from '../templates/home.jst';
 import myGamesTab from "../templates/mygames.jst";
-import placeholder from '../images/placeholder.png';
 import notification from '../templates/notification.jst';
 var dashboard = {
     init: function () {
         document.getElementById('v-pills-home').innerHTML = homeTab();
         ipcRenderer.invoke('get-all-rows', 'games').then(function (data) {
-            document.getElementById('v-pills-mygames').innerHTML = myGamesTab({
+            document.getElementById('myGamesList').innerHTML = myGamesTab({
                 games: data,
-                coverImg: placeholder
             });
-            dashboard.createIPCs();
-            dashboard.setEventListeners();
+
         });
+        dashboard.createIPCs();
+        dashboard.setEventListeners();
 
 
     },
@@ -27,7 +26,11 @@ var dashboard = {
             }));
         });
         ipcRenderer.on('refresh', function () {
-            console.log('REFRESH ME');
+            ipcRenderer.invoke('get-all-rows', 'games').then(function (data) {
+                document.getElementById('myGamesList').innerHTML = myGamesTab({
+                    games: data,
+                });
+            });
         });
     },
     setEventListeners: function () {
