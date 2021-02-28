@@ -1,6 +1,7 @@
 import notification from '../templates/notification.jst';
 import '../dashboard/app.scss';
 import form from './form';
+import 'bootstrap';
 
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);

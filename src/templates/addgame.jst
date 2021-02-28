@@ -19,16 +19,48 @@
     <div class='form-group row' id='GenreRow'>
         <label class="col-sm-4 col-form-label" for="Genre">Genre </label>
         <div class='col-sm-8'>
-            <select class='form-control' id='Genre' name="Genre">
-                <option value=''>Select..</option>
-            </select>
+            <div class="dropdown me-1">
+                <input type='button' id='Genre' value="Select" class="btn btn-secondary dropdown-toggle"
+                    id="dropdownMenuGenre" data-bs-toggle="dropdown" aria-expanded="false" data-bs-offset="10,20" />
+                <ul id='genreList' aria-labelledby="dropdownMenuGenre" class='dropdown-menu'>
+                    <li><input class='form-control-plaintext dropdown-header' name="Genre" id='GenreInput' type='search'
+                            placeholder="Search..." /></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <%for(var i=0;i<genres.length;i++){%>
+                    <li class='dropdown-item filterable' value='<%=genres[i].Name.toLowerCase()%>'
+                        onclick='javascript:;document.getElementById("Genre").value="<%=genres[i].Name%>"'>
+                        <%=genres[i].Name%>
+                    </li>
+                    <%}%>
+                </ul> 
+            </div>
+                     
         </div>
     </div>
     <div class='form-group row' id='PlatformRow'>
         <label class="col-sm-4 col-form-label" for="Platform">Platform </label>
         <div class='col-sm-8'>
-            <select class='form-control' id='Platform' name="Platform">
-            </select>
+                  <div class="dropdown me-1">
+                      <input type='button' id='Platform' value="Select" class="btn btn-secondary dropdown-toggle"
+                          id="dropdownMenuPlatform" data-bs-toggle="dropdown" aria-expanded="false"
+                          data-bs-offset="10,20"/>
+                      <ul id='platformList' aria-labelledby="dropdownMenuPlatform" class='dropdown-menu'>
+                          <li><input class='form-control-plaintext dropdown-header' name="Platform" id='PlatformInput'
+                                  type='search'placeholder="Search..." />
+                          </li>
+                          <li>
+                              <hr class="dropdown-divider">
+                          </li>
+                          <%for(var i=0;i<platforms.length;i++){%>
+                    <li class='dropdown-item filterable' value='<%=platforms[i].Name.toLowerCase()%>'
+                        onclick='javascript:;document.getElementById("Platform").value="<%=platforms[i].Name%>"'>
+                        <%=platforms[i].Name%>
+                    </li>
+                    <%}%>
+                </ul> 
+            </div>
         </div>
     </div>
     <div class='form-group row' id='ClientRow'>

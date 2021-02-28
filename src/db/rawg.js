@@ -15,20 +15,6 @@ const rawgApi = {
             return response.json();
         });
     },
-    getGenres: function () {
-        return fetch(`https://api.rawg.io/api/genres/?${key}`, {
-            method: 'GET'
-        }).then(function (response) {
-            return response.json();
-        });
-    },
-    getPlatforms: function () {
-        return fetch(`https://api.rawg.io/api/platforms/?${key}`, {
-            method: 'GET'
-        }).then(function (response) {
-            return response.json();
-        });
-    }
 };
 
 module.exports = rawgApi;

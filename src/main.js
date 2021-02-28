@@ -30,10 +30,11 @@ const createWindow = () => {
   });
   // and load the index.html of the app.
   if (isDev) {
-    mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+    mainWindow.webContents.openDevTools();
+
   }
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
   createMainIPCs(mainWindow);
 };
 const createModal = (parent, type) => {
@@ -78,6 +79,13 @@ const createMainIPCs = function (mainWindow) {
   ipcMain.handle('api-search', async function (event, game) {
     const results = await rawgApi.searchGames(game);
     return results;
+  });
+  ipcMain.handle('getGAndP', function (event) {
+    const data = {
+      genres: db.getAllRows('genres'),
+      platforms: db.getAllRows('platforms')
+    };
+    return data;
   });
 };
 

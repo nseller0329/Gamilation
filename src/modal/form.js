@@ -1,24 +1,31 @@
+import {
+    filter
+} from 'underscore';
 import addGame from '../templates/addGame.jst';
 var form = {
     init: function (bodyID, type) {
-        switch (type) {
+        this.type = type;
+        switch (this.type) {
             case 'new-game':
-
-                document.getElementById(bodyID).innerHTML = addGame({
-                    genres: '',
-                    platforms: '',
+                ipcRenderer.invoke('getGAndP').then(function (data) {
+                    document.getElementById(bodyID).innerHTML = addGame({
+                        genres: data.genres,
+                        platforms: data.platforms,
+                    });
+                    form.setFormListeners();
                 });
+
                 break;
             default:
                 break;
         }
 
-        form.setFormListeners();
+
 
     },
     setFormListeners: function () {
         document.getElementById('save').addEventListener('click', function () {
-            modal.sendData(modal.getFormData());
+            form.sendData(form.getFormData());
         });
         document.getElementById('Name').addEventListener('keyup', function (e) {
             var val = e.target.value,
@@ -35,24 +42,36 @@ var form = {
                 });
             }
         });
-        document.getElementById('Name').addEventListener('input', function (e) {
-            var match = document.querySelector(`#gamesDataList option[value='${e.target.value}'`);
-            if (match) {
-                console.log('match!');
-                console.log(match.dataset.gameid);
-            }
-
+        document.getElementById('GenreInput').addEventListener('keyup', function (e) {
+            form.filterSelect(e, "genreList");
+        });
+        document.getElementById('PlatformInput').addEventListener('keyup', function (e) {
+            form.filterSelect(e, "platformList");
         });
 
+
+    },
+    filterSelect: function (e, listElement) {
+        var options = Array.prototype.slice.call(document.querySelectorAll(`#${listElement} li.filterable`));
+        var matches = Array.prototype.slice.call(document.querySelectorAll(`#${listElement} li[value^='${e.target.value.toLowerCase()}']`));
+        for (var i = 0; i < options.length; i++) {
+            if (matches.length && !matches.includes(options[i])) {
+                options[i].style.display = 'none';
+            } else {
+                options[i].style.display = 'block';
+            }
+        }
     },
     getFormData: function () {
         var form = document.querySelector('form'),
             formData = new FormData(form),
             keys = [],
-            item, rowID = (modalType !== 'new-game') ? form.dataset.rowid : false;
+            item, rowID = (this.Type !== 'new-game') ? form.dataset.rowid : false;
         for (var key of formData.keys()) {
             keys.push(key);
         }
+        formData.append("Genre", document.getElementById('Genre').value);
+        formData.append("Platform", document.getElementById('Platform').value);
         item = {
             rows: [Object.fromEntries(formData)],
             keys: keys,
@@ -63,7 +82,7 @@ var form = {
     },
     sendData: function (data) {
         console.log(data);
-        ipcRenderer.invoke('add-rows', data);
+        //  ipcRenderer.invoke('add-rows', data);
     }
 };
 export default form;
