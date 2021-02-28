@@ -1,4 +1,5 @@
 import './app.scss';
+import "@fortawesome/fontawesome-free/js/all";
 import 'bootstrap';
 import homeTab from '../templates/home.jst';
 import myGamesTab from "../templates/mygames.jst";
@@ -12,9 +13,11 @@ var dashboard = {
                 games: data,
                 coverImg: placeholder
             });
+            dashboard.createIPCs();
+            dashboard.setEventListeners();
         });
-        ipcRenderer.send('show-modal', 'new-game');
-        dashboard.createIPCs();
+
+
     },
     createIPCs: function () {
         ipcRenderer.on('notification', function (event, type, message) {
@@ -25,6 +28,11 @@ var dashboard = {
         });
         ipcRenderer.on('refresh', function () {
             console.log('REFRESH ME');
+        });
+    },
+    setEventListeners: function () {
+        document.getElementById('addGame').addEventListener('click', function () {
+            ipcRenderer.send('show-modal', 'new-game');
         });
     }
 };

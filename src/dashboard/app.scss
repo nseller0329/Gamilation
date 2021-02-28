@@ -19,6 +19,15 @@ body {
         display: none;
     }
 
+    .required {
+        color: red;
+        font-weight: bold;
+    }
+
+    .form-group {
+        margin-bottom: 10px;
+    }
+
     .dropdown-menu {
         &.show {
             transform: translate(0px, 40px) !important;

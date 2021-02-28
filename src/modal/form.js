@@ -22,49 +22,59 @@ var form = {
 
     },
     setFormListeners: function () {
-        document.getElementById('save').addEventListener('click', function () {
-            form.sendData(form.getFormData());
+        document.getElementById('gamesForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (f.checkValidity()) {
+                form.sendData(form.getFormData());
+            }
         });
         document.getElementById('Name').addEventListener('keyup', function (e) {
-            var val = e.target.value,
-                datalist = document.getElementById('gamesDataList'),
-                maxResults = 5;
-            if (val.length > 4) {
-                ipcRenderer.invoke('api-search', val).then(function (resp) {
-                    datalist.innerHTML = '';
-                    for (var i = 0; i < resp.results.length; i++) {
-                        if (i < maxResults) {
-                            datalist.insertAdjacentHTML('afterbegin', '<option data-gameid="' + resp.results[i].id + '" value = "' + resp.results[i].name + '" > ');
-                        }
-                    } //show top 5 in suggestions
-                });
-            }
+            form.searchForGameWithApi(e);
         });
         document.getElementById('Genre').addEventListener('keyup', function (e) {
             form.filterSelect(e, "genreList");
-            var toggle = document.getElementById('genreToggle');
-            if (!toggle.classList.contains('show') && e.target.value) {
-                toggle.click();
-            } else if (toggle.classList.contains('show') && !e.target.value) {
-                toggle.click();
-            }
-
+            form.toggleDropdown(e, 'genreToggle');
         });
         document.getElementById('Platform').addEventListener('keyup', function (e) {
             form.filterSelect(e, "platformList");
-            var toggle = document.getElementById('platformToggle');
-            if (!toggle.classList.contains('show') && e.target.value) {
-                toggle.click();
-            } else if (toggle.classList.contains('show') && !e.target.value) {
-                toggle.click();
-            }
+            form.toggleDropdown(e, 'platformToggle');
+        });
+        Array.prototype.slice.call(document.getElementsByClassName('dropdown-item')).forEach(function (item) {
+            item.addEventListener('click', function (e) {
+                form.setSelectValue(e.target.dataset.inputref, e.target.getAttribute('value'), e.target.parentNode.id);
+            });
         });
 
 
     },
+
+    searchForGameWithApi: function (e) {
+        var val = e.target.value,
+            datalist = document.getElementById('gamesDataList'),
+            maxResults = 5;
+        if (val.length > 4) {
+            ipcRenderer.invoke('api-search', val).then(function (resp) {
+                datalist.innerHTML = '';
+                for (var i = 0; i < resp.results.length; i++) {
+                    if (i < maxResults) {
+                        datalist.insertAdjacentHTML('afterbegin', '<option data-gameid="' + resp.results[i].id + '" value = "' + resp.results[i].name + '" > ');
+                    }
+                } //show top 5 in suggestions
+            });
+        }
+    },
+    toggleDropdown: function (e, toggleElement) {
+        var toggle = document.getElementById(toggleElement);
+        if (!toggle.classList.contains('show') && e.target.value) {
+            toggle.click();
+        } else if (toggle.classList.contains('show') && !e.target.value) {
+            toggle.click();
+        }
+    },
     filterSelect: function (e, listElement) {
-        var options = Array.prototype.slice.call(document.querySelectorAll(`#${listElement} li.filterable`));
-        var matches = Array.prototype.slice.call(document.querySelectorAll(`#${listElement} li[value^='${e.target.value.toLowerCase()}']`));
+        var options = Array.prototype.slice.call(document.querySelectorAll(`#${listElement} li.filterable`)),
+            values = e.target.value.split(',');
+        var matches = Array.prototype.slice.call(document.querySelectorAll(`#${listElement} li[data-searchval^='${values[values.length-1].toLowerCase()}']`));
         for (var i = 0; i < options.length; i++) {
             if (matches.length && !matches.includes(options[i])) {
                 options[i].style.display = 'none';
@@ -72,6 +82,24 @@ var form = {
                 options[i].style.display = 'block';
             }
         }
+    },
+    setSelectValue: function (parent, value, listElement) {
+        var parentElem = document.getElementById(parent),
+            matchesVals = [],
+            matches = document.querySelectorAll(`#${listElement} li`),
+            parentElemVals = parentElem.value.split(','),
+            newVals = [];
+        parentElemVals.push(value);
+        for (var i = 0; i < matches.length; i++) {
+            matchesVals.push(matches[i].dataset.searchval);
+        }
+        for (var n = 0; n < parentElemVals.length; n++) {
+            if (matchesVals.includes(parentElemVals[n].toLowerCase()) && !newVals.includes(parentElemVals[n])) {
+                newVals.push(parentElemVals[n]);
+            }
+        }
+        parentElem.value = newVals;
+        parentElem.focus();
     },
     getFormData: function () {
         var form = document.querySelector('form'),

@@ -35,6 +35,7 @@ const createWindow = () => {
   }
   // Open the DevTools.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+  mainWindow.maximize();
   createMainIPCs(mainWindow);
 };
 const createModal = (parent, type) => {
@@ -55,7 +56,9 @@ const createModal = (parent, type) => {
   if (isDev) {
     modal.webContents.openDevTools();
   }
+  modal.maximize();
 };
+
 const createMainIPCs = function (mainWindow) {
   ipcMain.handle('get-all-rows', (event, table) => {
     const allRows = db.getAllRows(table);
