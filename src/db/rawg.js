@@ -1,9 +1,8 @@
-const key = 'key=4d01c0acbee14d8582c27cf3d92f7d00';
+const key = process.env.RAWG_KEY;
 const fetch = require('cross-fetch');
-
 const rawgApi = {
     searchGames: function (searchParam) {
-        return fetch(`https://api.rawg.io/api/games?${key}&search='${searchParam}'&search_exact=true`, {
+        return fetch(`https://api.rawg.io/api/games?${key}&search='${searchParam}'&search_precise=true`, {
             method: 'GET'
         }).then(function (response) {
             return response.json();
@@ -15,10 +14,7 @@ const rawgApi = {
         }).then(function (response) {
             return response.json();
         });
-    }
+    },
 };
 
 module.exports = rawgApi;
-/*rawgApi.searchGames('Final Fantasy').then(function (data) {
-    console.log(data);
-}); */

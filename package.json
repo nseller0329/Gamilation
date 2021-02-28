@@ -1,8 +1,8 @@
 {
-  "name": "electron-webpack-template",
-  "productName": "electron-webpack-template",
+  "name": "Gamilation",
+  "productName": "Gamilation",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "Gamilation App",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
@@ -20,7 +20,8 @@
   "config": {
     "forge": {
       "packagerConfig": {},
-      "makers": [{
+      "makers": [
+        {
           "name": "@electron-forge/maker-squirrel",
           "config": {
             "name": "electron-webpack-template"
@@ -48,7 +49,8 @@
             "mainConfig": "./webpack.main.config.js",
             "renderer": {
               "config": "./webpack.renderer.config.js",
-              "entryPoints": [{
+              "entryPoints": [
+                {
                   "html": "./src/dashboard/index.html",
                   "js": "./src/dashboard/renderer.js",
                   "name": "main_window",
@@ -82,6 +84,7 @@
     "copy-webpack-plugin": "^6.3.2",
     "css-loader": "^4.3.0",
     "electron": "11.2.3",
+    "electron-rebuild": "^2.3.5",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.0.0-beta.6",
     "node-loader": "^1.0.2",
@@ -92,9 +95,11 @@
     "underscore-template-loader": "^1.1.0"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.2",
     "better-sqlite3": "^7.1.2",
     "bootstrap": "^5.0.0-beta2",
     "cross-fetch": "^3.0.6",
+    "dotenv": "^8.2.0",
     "electron-is-dev": "^1.2.0",
     "electron-squirrel-startup": "^1.0.0"
   }

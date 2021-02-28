@@ -1,9 +1,18 @@
 <h1> My Games</h1>
-<%for (var i=0;i < games.length;i++){%>
-<div class="card" style="width: 18rem;">
-    <img src="<%=coverImg%>" class="card-img-top" alt="#">
-    <div class="card-body">
-        <p class="card-text"><%=games[i].Name%></p>
+<div class="row">
+    <%for (var i=0;i < games.length;i++){%>
+    <div class="card">
+        <div class="card-header"><%=games[i].Name%></div>
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Genre(s): <%=games[i].Genre%>
+                </li>
+                <li class="list-group-item">Platform(s): <%=games[i].Platform%>
+                </li>
+                <li class="list-group-item">Format: <%=games[i].Format%></li>
+            </ul>
+            <input type='button' class="btn btn-primary" value='Edit Item'>
+        </div>
     </div>
+    <%}%>
 </div>
-<%}%>

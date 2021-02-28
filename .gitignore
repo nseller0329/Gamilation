@@ -106,3 +106,4 @@ dist
 .webpack/
 /.webpack/main
 /.webpack/renderer
+/out
