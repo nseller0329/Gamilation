@@ -13,4 +13,15 @@ body {
     #ClientRow {
         display: none;
     }
+
+    #genreToggle,
+    #platformToggle {
+        display: none;
+    }
+
+    .dropdown-menu {
+        &.show {
+            transform: translate(0px, 40px) !important;
+        }
+    }
 }

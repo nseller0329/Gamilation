@@ -1,7 +1,5 @@
-import {
-    filter
-} from 'underscore';
 import addGame from '../templates/addGame.jst';
+
 var form = {
     init: function (bodyID, type) {
         this.type = type;
@@ -42,11 +40,24 @@ var form = {
                 });
             }
         });
-        document.getElementById('GenreInput').addEventListener('keyup', function (e) {
+        document.getElementById('Genre').addEventListener('keyup', function (e) {
             form.filterSelect(e, "genreList");
+            var toggle = document.getElementById('genreToggle');
+            if (!toggle.classList.contains('show') && e.target.value) {
+                toggle.click();
+            } else if (toggle.classList.contains('show') && !e.target.value) {
+                toggle.click();
+            }
+
         });
-        document.getElementById('PlatformInput').addEventListener('keyup', function (e) {
+        document.getElementById('Platform').addEventListener('keyup', function (e) {
             form.filterSelect(e, "platformList");
+            var toggle = document.getElementById('platformToggle');
+            if (!toggle.classList.contains('show') && e.target.value) {
+                toggle.click();
+            } else if (toggle.classList.contains('show') && !e.target.value) {
+                toggle.click();
+            }
         });
 
 
