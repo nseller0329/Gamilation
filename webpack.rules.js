@@ -21,11 +21,11 @@ module.exports = [
       loader: 'underscore-template-loader',
     },
   }, {
-    test: /\.(png|svg|jpg|jpeg|gif)$/i,
+    test: /\.(eot|ttf|woff|woff2|png|svg|jpg|jpeg|gif)$/i,
     loader: 'file-loader',
     options: {
       name: '[name].[ext]',
-       outputPath: 'images',
+      outputPath: 'assets',
     }
 
   },
