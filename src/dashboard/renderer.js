@@ -4,7 +4,7 @@ import homeTab from '../templates/home.jst';
 import myGamesCard from "../templates/mygames.jst";
 import notification from '../templates/notification.jst';
 import icons from '../common/iconMap.js';
-import images from '../common/images.js';
+
 
 var dashboard = {
     init: function () {
@@ -16,9 +16,8 @@ var dashboard = {
                     genreLabels = [],
                     imgPath = '';
                 for (var n = 0; n < genres.length; n++) {
-                    imgPath = images[genres[n].toLowerCase()];
-                    console.log(imgPath);
-                    genreLabels.push(imgPath);
+
+                    genreLabels.push(icons.genreIcons[genres[n].toLowerCase().replace(' ', "")]);
                 }
 
                 document.getElementById('myGamesList').insertAdjacentHTML('beforeend', myGamesCard({

@@ -11,6 +11,21 @@ body {
     @import '~bootstrap/scss/bootstrap.scss';
 }
 
+#myGamesList {
+    margin-bottom: 50px;
+
+    .card-header {
+        h5 {
+
+            span {
+                display: block;
+                float: right;
+            }
+        }
+    }
+}
+
+
 #gamesForm {
     #ClientRow {
         display: none;

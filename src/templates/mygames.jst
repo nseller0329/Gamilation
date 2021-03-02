@@ -1,13 +1,13 @@
 <div class="card">
-    <div class="card-header">
-        <h1><%=game.Name%></h1>
-        <span><%=statusIcons[game.Status]%></span>
+    <div class="card-header row justify-content-between">
+        <h5><%=game.Name%> <span><%=statusIcons[game.Status]%></span></h5>
+
     </div>
     <div class="card-body">
         <ul class="list-group list-group-flush">
             <li class="list-group-item">Genre(s):
                 <%for(var n=0; n< genreLabels.length;n++){%>
-                <img src='<%=genreLabels[n]%>'>
+                <%=genreLabels[n]%>
                 <%}%>
             </li>
             <li class="list-group-item">Platform(s): <%=game.Platform%>
