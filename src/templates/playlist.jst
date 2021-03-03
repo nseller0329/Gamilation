@@ -7,6 +7,24 @@
             <%if(games[n].Status===statuses[i]){%>
             <li draggable='true' data-itemid='<%=games[n].ID%>' id='playlist-<%games[n].ID%>'
                 class="playListItem list-group-item"><%=games[n].Name%>
+
+                <%if(statuses[i]==='Playing'){%>
+                <div class="btn-group">
+                    <button class="btn btn-secondary btn-sm" type="button">
+                        Update
+                    </button>
+                    <button type="button" class="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="visually-hidden">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li data-itemid='<%=games[n].ID%>' data-status='Completed' class='plUpdate dropdown-item'>
+                            Completed</li>
+                        <li data-itemid='<%=games[n].ID%>' data-status='Not Finished' class='plUpdate  dropdown-item'>
+                            Not Finished</li>
+                    </ul>
+                </div>
+                <%}%>
             </li>
             <%}}%>
         </ul>

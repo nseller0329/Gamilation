@@ -45,6 +45,7 @@ class dbaccess {
         insertRows(rows);
     }
     updateRowItem(table, data, params = [], callback) {
+        console.log('here')
         var IdField = schema[table].idField,
             updatefields = [],
             query, sql, errLog = [];

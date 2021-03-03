@@ -1,10 +1,10 @@
 var icons = {
     statusIcons: {
-        'Up Next': '<i class="lnir lnir-power-switch"></i>',
-        Playing: '<i style="color:green;" class="lnir lnir-power-switch"></i>',
+        'Up Next': '<i style="color:yellow;font-weight:bold;" class="lnir lnir-power-switch"></i>',
+        Playing: '<i style="color:green;font-weight:bold;" class="lnir lnir-power-switch"></i>',
         Completed: '<i class="lnir lnir-medal"></i>',
-        Unplayed: '<i style="color:red;" class="lnir llnir-power-switch"></i>',
-        'Not Finished': '<i style="color:yellow;" class="lnir lnir-power-switch"></i>'
+        Unplayed: '<i  style="font-weight:bold;"class="lnir llnir-power-switch"></i>',
+        'Not Finished': '<i style="color:red;font-weight:bold;"  class="lnir lnir-power-switch"></i>'
     },
     genreIcons: {
         Action: '<i class="lnir lnir-bolt-alt"></i>',
