@@ -1,13 +1,34 @@
+@import '../common/lineicons/font-css/LineIcons.css';
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     margin: auto;
-    max-width: 38rem;
+    max-width: 100%;
     padding: 2rem;
 }
 
 .bootstrapped {
     @import '~bootstrap/scss/bootstrap.scss';
 }
+
+#myGamesList {
+    margin-bottom: 50px;
+
+    .card {
+        margin: 20px;
+
+        .card-header {
+            h5 {
+
+                span {
+                    display: block;
+                    float: right;
+                }
+            }
+        }
+    }
+}
+
 
 #gamesForm {
     #ClientRow {

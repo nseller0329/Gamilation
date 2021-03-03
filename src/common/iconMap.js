@@ -1,6 +1,51 @@
-var statusIcons = {
-
+var icons = {
+    statusIcons: {
+        Playing: '<i style="color:green;" class="lnir lnir-power-switch"></i>',
+        Completed: '<i class="lnir lnir-medal"></i>',
+        Unplayed: '<i style="color:red;" class="lnir llnir-power-switch"></i>',
+        'Not Finished': '<i style="color:yellow;" class="lnir lnir-power-switch"></i>'
+    },
+    genreIcons: {
+        action: '<i class="lnir lnir-bolt-alt"></i>',
+        adventure: '<i class="lnir lnir-backpack"></i>',
+        rpg: '<i class="lnir lnir-library"></i>',
+        strategy: '<i class="lnir lnir-rook"></i>',
+        shooter: '<i class="lnir lnir-target"></i>',
+        simulation: '<i class="lnir lnir-strategy"></i>',
+        puzzle: '<i class="lnir lnir-cubes"></i>',
+        arcade: '<i class="lnir lnir-diamond-alt"></i>',
+        platformer: '<i class="lnir lnir-menu-alt-4"></i>',
+        racing: '<i class="lnir lnir-car-alt"></i>',
+        sports: '<i class="lnir lnir-basketball"></i>',
+        'massively multiplayer': '<i class="lnir lnir-network"></i>',
+        fighting: '<i class="lnir lnir-users-2"></i>',
+    },
+    platformIcons: {
+        PC: '',
+        'Playstation 5': '',
+        'Playstation 4': '',
+        'Xbox One': '',
+        'Xbox Series S/X': '',
+        'Nintendo Switch': '',
+        Mobile: '',
+        'Nintendo 3DS': '',
+        'Nintendo DS': '',
+        'Xbox 360': '',
+        Xbox: '',
+        'Playstation 3': '',
+        'Playstation 2': '',
+        Playstation: '',
+        'PS Vita': '',
+        PSP: '',
+        'Wii U': '',
+        Wii: '',
+        GameCube: '',
+        'Nintendo 64': '',
+        'Game Boy Advance': '',
+        'Game Boy Color': '',
+        'Game Boy': '',
+        SNES: '',
+        NES: ''
+    }
 };
-var genreIcons = {
-
-};
+export default icons;

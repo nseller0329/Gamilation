@@ -1,18 +1,32 @@
-<h1> My Games</h1>
-<div class="row">
-    <%for (var i=0;i < games.length;i++){%>
-    <div class="card">
-        <div class="card-header"><%=games[i].Name%></div>
-        <div class="card-body">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">Genre(s): <%=games[i].Genre%>
-                </li>
-                <li class="list-group-item">Platform(s): <%=games[i].Platform%>
-                </li>
-                <li class="list-group-item">Format: <%=games[i].Format%></li>
+<div class="card col-4">
+    <div class="card-header row justify-content-between">
+        <h5><%=game.Name%> <span><%=statusIcons[game.Status]%></span></h5>
+
+    </div>
+    <div class="card-body">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">Genre(s):
+                <%for(var n=0; n< genreLabels.length;n++){%>
+                <%=genreLabels[n]%>
+                <%}%>
+            </li>
+            <li class="list-group-item">Platform(s): <%=game.Platform%>
+            </li>
+            <li class="list-group-item">Format: <%=game.Format%></li>
+        </ul>
+        <input type='button' class="btn btn-sm btn-primary" value='Edit Item'>
+        <div class="btn-group">
+            <button class="btn btn-secondary btn-sm" type="button">
+                Add to Playlist
+            </button>
+            <button type="button" class="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="visually-hidden">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu">
+                <li class='dropdown-item'>Up Next</li>
+                <li class='dropdown-item'>Playing</li>
             </ul>
-            <input type='button' class="btn btn-primary" value='Edit Item'>
         </div>
     </div>
-    <%}%>
 </div>

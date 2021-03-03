@@ -14,7 +14,7 @@ module.exports = {
   plugins: assets.map(asset => {
     return new copyPlugin({
       patterns: [{
-        from: path.resolve(__dirname, './src/db', asset),
+        from: path.resolve(__dirname, './src/', asset),
         to: path.resolve(__dirname, '.webpack/main', asset)
       }]
     });

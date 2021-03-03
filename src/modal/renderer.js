@@ -1,7 +1,6 @@
 import notification from '../templates/notification.jst';
 import '../dashboard/app.scss';
 import form from './form';
-import "@fortawesome/fontawesome-free/js/all";
 import 'bootstrap';
 
 const queryString = window.location.search;

@@ -1,17 +1,31 @@
 import './app.scss';
-import "@fortawesome/fontawesome-free/js/all";
 import 'bootstrap';
 import homeTab from '../templates/home.jst';
-import myGamesTab from "../templates/mygames.jst";
+import myGamesCard from "../templates/mygames.jst";
 import notification from '../templates/notification.jst';
+import icons from '../common/iconMap.js';
+
+
 var dashboard = {
     init: function () {
         document.getElementById('v-pills-home').innerHTML = homeTab();
         ipcRenderer.invoke('get-all-rows', 'games').then(function (data) {
-            document.getElementById('myGamesList').innerHTML = myGamesTab({
-                games: data,
-            });
 
+            for (var i = 0; i < data.length; i++) {
+                var genres = data[i].Genre.split(','),
+                    genreLabels = [],
+                    imgPath = '';
+                for (var n = 0; n < genres.length; n++) {
+
+                    genreLabels.push(icons.genreIcons[genres[n].toLowerCase().replace(' ', "")]);
+                }
+
+                document.getElementById('myGamesList').insertAdjacentHTML('beforeend', myGamesCard({
+                    game: data[i],
+                    genreLabels: genreLabels,
+                    statusIcons: icons.statusIcons
+                }));
+            }
         });
         dashboard.createIPCs();
         dashboard.setEventListeners();
@@ -29,6 +43,7 @@ var dashboard = {
             ipcRenderer.invoke('get-all-rows', 'games').then(function (data) {
                 document.getElementById('myGamesList').innerHTML = myGamesTab({
                     games: data,
+                    statusIcons: statusIcons
                 });
             });
         });
