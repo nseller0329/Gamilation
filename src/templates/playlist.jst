@@ -1,0 +1,15 @@
+<div class='row'>
+    <%for(var i=0 ; i < statuses.length;i++){%>
+    <h1><%=statuses[i]%></h1>
+    <div id='playlist-<%=statuses[i]%>' data-status='<%=statuses[i]%>' class=' playListCol col-md-auto'>
+        <ul class="list-group list-group-flush">
+            <%for(var n=0 ; n<games.length;n++){%>
+            <%if(games[n].Status===statuses[i]){%>
+            <li draggable='true' data-itemid='<%=games[n].ID%>' id='playlist-<%games[n].ID%>'
+                class="playListItem list-group-item"><%=games[n].Name%>
+            </li>
+            <%}}%>
+        </ul>
+    </div>
+    <%}%>           
+</div>

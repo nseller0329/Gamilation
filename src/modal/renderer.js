@@ -12,10 +12,10 @@ var modal = {
     init: function () {
         switch (modalType) {
             case 'new-game':
-                form.init('modal-body', modalType);
+                form.init('modal-body', null);
                 break;
             case 'edit-game':
-                form.init('modal-body', modalType, data);
+                form.init('modal-body', data);
                 break;
             default:
                 break;

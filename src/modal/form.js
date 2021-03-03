@@ -1,44 +1,37 @@
-import addGame from '../templates/addGame.jst';
-import editGame from '../templates/editGame.jst';
+import gameItem from '../templates/gameItem.jst';
+
 
 var form = {
-    init: function (bodyID, type, data) {
-        this.type = type;
-        switch (this.type) {
-            case 'new-game':
-                ipcRenderer.invoke('getLookups').then(function (data) {
-                    document.getElementById(bodyID).innerHTML = addGame({
-                        genres: data.genres,
-                        platforms: data.platforms,
-                        statuses: data.statuses
-                    });
-                    form.setFormListeners();
-                });
-
-                break;
-            case 'edit-game':
-                ipcRenderer.invoke('get-GameById', data).then(function (game) {
-                    ipcRenderer.invoke('getLookups').then(function (data) {
-                        document.getElementById(bodyID).innerHTML = editGame({
-                            genres: data.genres,
-                            platforms: data.platforms,
-                            statuses: data.statuses,
-                            itemID: game.ID
-                        });
-                        for (var index in game) {
-                            if (document.getElementById(index)) {
-                                document.getElementById(index).value = game[index];
-                            }
-                        }
-                        form.setFormListeners();
-                    });
-                });
-
-                break;
-            default:
-                break;
+    init: function (bodyID, data) {
+        if (data) {
+            this.itemID = data;
         }
+        form.renderForm(bodyID);
+    },
+    renderForm: function (bodyID) {
+        ipcRenderer.invoke('getLookups').then(function (lookups) {
+            document.getElementById(bodyID).innerHTML = gameItem({
+                genres: lookups.genres,
+                platforms: lookups.platforms,
+                statuses: lookups.statuses,
+            });
+            form.setFormListeners();
+            if (form.itemID) {
+                form.setFormData();
+            }
+        });
 
+    },
+    setFormData: function () {
+        ipcRenderer.invoke('get-GameById', form.itemID).then(function (game) {
+
+            for (var index in game) {
+                if (document.getElementById(index)) {
+                    document.getElementById(index).value = game[index];
+                }
+            }
+
+        });
     },
     setFormListeners: function () {
         document.getElementById('gamesForm').addEventListener('submit', function (e) {
@@ -60,8 +53,6 @@ var form = {
                 form.setSelectValue(e.target.dataset.inputref, e.target.getAttribute('value'), e.target.parentNode.id);
             });
         });
-
-
     },
 
     toggleDropdown: function (e, toggleElement) {
@@ -103,10 +94,10 @@ var form = {
         parentElem.focus();
     },
     getFormData: function () {
-        var form = document.querySelector('form'),
-            formData = new FormData(form),
+        var formElem = document.querySelector('form'),
+            formData = new FormData(formElem),
             keys = [],
-            item, rowID = (this.Type !== 'new-game') ? form.dataset.itemid : false;
+            item, rowID = (form.itemID) ? form.itemID : false;
         for (var key of formData.keys()) {
             keys.push(key);
         }
@@ -115,17 +106,19 @@ var form = {
         item = {
             rows: [Object.fromEntries(formData)],
             keys: keys,
-            form: form.getAttribute('name'),
+            form: formElem.getAttribute('name'),
             rowID: rowID
         };
         return item;
     },
     sendData: function (data) {
+
         if (data.rowID) {
             ipcRenderer.invoke('update-item', data);
         } else {
             ipcRenderer.invoke('add-rows', data);
         }
+
     }
 };
 export default form;

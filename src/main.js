@@ -94,6 +94,9 @@ const createMainIPCs = function (mainWindow) {
       }
     });
   });
+  ipcMain.handle('updateGameStatus', (event, game) => {
+    db.updateRowItem('games', game.status, game.id);
+  });
   ipcMain.on('show-modal', function (event, type, data) {
     createModal(mainWindow, type, data);
   });

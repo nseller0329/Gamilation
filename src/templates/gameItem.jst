@@ -1,4 +1,4 @@
-<form id='gamesForm' name="games" class='needs-validation' data-itemid='<%=itemID%>'>
+<form id='gamesForm' name="games" class='needs-validation'>
     <div class='form-group row' id='NameRow'>
         <label class="col-sm-4 col-form-label" for="Name">Name <sup class='required'><i
                     class="fas fa-asterisk"></i></sup> </label>
@@ -28,7 +28,7 @@
                     aria-expanded="false">
                 <span class="visually-hidden">Toggle Dropdown</span>
                 </button>
-                <ul id='genreList' aria-labelledby="dropdownMenuGenre" class='dropdown-menu'>
+                <ul id='genreList' aria-labelledby="dropdownMenuGenre" class='dropdown-menu' role='menu'>
                     <%for(var i=0;i<genres.length;i++){%>
                     <li class='dropdown-item filterable' value='<%=genres[i].Name%>' data-inputref='Genre'
                         data-searchval='<%=genres[i].Name.toLowerCase()%>'>
@@ -49,7 +49,7 @@
                           class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"
                           aria-expanded="false" />
                       <span class="visually-hidden">Toggle Dropdown</span>
-                      <ul id='platformList' aria-labelledby="dropdownMenuPlatform" class='dropdown-menu'>
+                      <ul id='platformList' aria-labelledby="dropdownMenuPlatform" class='dropdown-menu' role='menu'>
                                 <%for(var i=0;i<platforms.length;i++){%>
                     <li class='dropdown-item filterable' value='<%=platforms[i].Name%>' data-inputref='Platform'
                         data-searchval='<%=platforms[i].Name.toLowerCase()%>'>
