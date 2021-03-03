@@ -1,7 +1,7 @@
 var schema = {
     games: {
-        fields: ["ItemID", "Media_Type", "Media_Format", "Name", "Platform", "Client", "Genre", "Status"],
-        idField: "ItemID"
+        fields: ["ID", "Media_Type", "Media_Format", "Name", "Platform", "Client", "Genre", "Status"],
+        idField: "ID"
     },
     genres: {
         fields: ['ID', 'Name'],

@@ -1,7 +1,8 @@
 import addGame from '../templates/addGame.jst';
+import editGame from '../templates/editGame.jst';
 
 var form = {
-    init: function (bodyID, type) {
+    init: function (bodyID, type, data) {
         this.type = type;
         switch (this.type) {
             case 'new-game':
@@ -12,6 +13,25 @@ var form = {
                         statuses: data.statuses
                     });
                     form.setFormListeners();
+                });
+
+                break;
+            case 'edit-game':
+                ipcRenderer.invoke('get-GameById', data).then(function (game) {
+                    ipcRenderer.invoke('getLookups').then(function (data) {
+                        document.getElementById(bodyID).innerHTML = editGame({
+                            genres: data.genres,
+                            platforms: data.platforms,
+                            statuses: data.statuses,
+                            itemID: game.ID
+                        });
+                        for (var index in game) {
+                            if (document.getElementById(index)) {
+                                document.getElementById(index).value = game[index];
+                            }
+                        }
+                        form.setFormListeners();
+                    });
                 });
 
                 break;
@@ -86,7 +106,7 @@ var form = {
         var form = document.querySelector('form'),
             formData = new FormData(form),
             keys = [],
-            item, rowID = (this.Type !== 'new-game') ? form.dataset.rowid : false;
+            item, rowID = (this.Type !== 'new-game') ? form.dataset.itemid : false;
         for (var key of formData.keys()) {
             keys.push(key);
         }
@@ -101,8 +121,11 @@ var form = {
         return item;
     },
     sendData: function (data) {
-
-        ipcRenderer.invoke('add-rows', data);
+        if (data.rowID) {
+            ipcRenderer.invoke('update-item', data);
+        } else {
+            ipcRenderer.invoke('add-rows', data);
+        }
     }
 };
 export default form;

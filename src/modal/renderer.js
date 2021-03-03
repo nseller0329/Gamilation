@@ -6,12 +6,16 @@ import 'bootstrap';
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const modalType = urlParams.get('type');
+const data = urlParams.get('data');
 
 var modal = {
     init: function () {
         switch (modalType) {
             case 'new-game':
                 form.init('modal-body', modalType);
+                break;
+            case 'edit-game':
+                form.init('modal-body', modalType, data);
                 break;
             default:
                 break;
