@@ -20,33 +20,6 @@ var icons = {
         Sports: '<i class="lnir lnir-basketball"></i>',
         'Massively Multiplayer': '<i class="lnir lnir-network"></i>',
         Fighting: '<i class="lnir lnir-users-2"></i>',
-    },
-    platformIcons: {
-        PC: '',
-        'Playstation 5': '',
-        'Playstation 4': '',
-        'Xbox One': '',
-        'Xbox Series S/X': '',
-        'Nintendo Switch': '',
-        Mobile: '',
-        'Nintendo 3DS': '',
-        'Nintendo DS': '',
-        'Xbox 360': '',
-        Xbox: '',
-        'Playstation 3': '',
-        'Playstation 2': '',
-        Playstation: '',
-        'PS Vita': '',
-        PSP: '',
-        'Wii U': '',
-        Wii: '',
-        GameCube: '',
-        'Nintendo 64': '',
-        'Game Boy Advance': '',
-        'Game Boy Color': '',
-        'Game Boy': '',
-        SNES: '',
-        NES: ''
     }
 };
 export default icons;
