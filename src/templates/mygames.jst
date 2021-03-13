@@ -1,32 +1,50 @@
-<div class="card col-4">
-    <div class="card-header row justify-content-between">
-        <h5><%=game.Name%> <span><%=statusIcons[game.Status]%></span></h5>
-
+<div class="card col-md-auto">
+  <div class="card-header row justify-content-between">
+    <h5><%=game.Name%> <span><%=statusIcons[game.Status]%></span></h5>
+  </div>
+  <div class="card-body">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        Genre(s): <%for(var n=0; n< genreLabels.length;n++){%>
+        <%=genreLabels[n]%> <%}%>
+      </li>
+      <li class="list-group-item">Platform(s): <%=game.Platform%></li>
+      <li class="list-group-item">Format: <%=game.Format%></li>
+    </ul>
+    <input
+      type="button"
+      data-itemid="<%=game.ID%>"
+      class="editItem btn btn-sm btn-primary"
+      value="Edit Item"
+    />
+    <div class="btn-group">
+      <button class="btn btn-secondary btn-sm" type="button">
+        Add to Playlist
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        <span class="visually-hidden">Toggle Dropdown</span>
+      </button>
+      <ul class="dropdown-menu">
+        <li
+          data-itemid="<%=game.ID%>"
+          data-status="Up Next"
+          class="mgUpdate dropdown-item"
+        >
+          Up Next
+        </li>
+        <li
+          data-itemid="<%=game.ID%>"
+          data-status="Playing"
+          class="mgUpdate dropdown-item"
+        >
+          Playing
+        </li>
+      </ul>
     </div>
-    <div class="card-body">
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item">Genre(s):
-                <%for(var n=0; n< genreLabels.length;n++){%>
-                <%=genreLabels[n]%>
-                <%}%>
-            </li>
-            <li class="list-group-item">Platform(s): <%=game.Platform%>
-            </li>
-            <li class="list-group-item">Format: <%=game.Format%></li>
-        </ul>
-        <input type='button' data-itemid='<%=game.ID%>' class="editItem btn btn-sm btn-primary" value='Edit Item'>
-        <div class="btn-group">
-            <button class="btn btn-secondary btn-sm" type="button">
-                Add to Playlist
-            </button>
-            <button type="button" class="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split"
-                data-bs-toggle="dropdown" aria-expanded="false">
-                <span class="visually-hidden">Toggle Dropdown</span>
-            </button>
-            <ul class="dropdown-menu">
-                <li data-itemid='<%=game.ID%>' data-status='Up Next' class='mgUpdate dropdown-item'>Up Next</li>
-                <li data-itemid='<%=game.ID%>' data-status='Playing' class='mgUpdate dropdown-item'>Playing</li>
-            </ul>
-        </div>
-    </div>
+  </div>
 </div>

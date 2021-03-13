@@ -1,66 +1,65 @@
-@import '../common/lineicons/font-css/LineIcons.css';
+@import "../common/lineicons/font-css/LineIcons.css";
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    margin: auto;
-    max-width: 100%;
-    padding: 2rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+  margin: auto;
+  max-width: 100%;
+  padding: 2rem;
 }
 
 .bootstrapped {
-    @import '~bootstrap/scss/bootstrap.scss';
+  @import "~bootstrap/scss/bootstrap.scss";
 }
 
 #myGamesList {
-    margin-bottom: 50px;
+  margin-bottom: 50px;
 
-    .card {
-        margin: 20px;
+  .card {
+    margin: 20px;
 
-        .card-header {
-            h5 {
-
-                span {
-                    display: block;
-                    float: right;
-                }
-            }
+    .card-header {
+      h5 {
+        span {
+          display: block;
+          float: right;
         }
+      }
     }
+  }
 }
 
 #playList {
-    .playListCol {
-        margin: 20px;
-        min-height: 300px;
-        min-width: 200px;
-        border: 1px solid black;
-    }
+  .playListCol {
+    margin: 20px;
+    min-height: 300px;
+    min-width: 200px;
+    border: 1px solid black;
+  }
 }
 
-
 #gamesForm {
-    #ClientRow {
-        display: none;
-    }
+  #ClientRow {
+    display: none;
+  }
 
-    #genreToggle,
-    #platformToggle {
-        display: none;
-    }
+  #genreToggle,
+  #platformToggle {
+    display: none;
+  }
 
-    .required {
-        color: red;
-        font-weight: bold;
-    }
+  .required {
+    color: red;
+    font-weight: bold;
+  }
 
-    .form-group {
-        margin-bottom: 10px;
-    }
+  .form-group {
+    margin-bottom: 10px;
+  }
 
-    .dropdown-menu {
-        &.show {
-            transform: translate(0px, 40px) !important;
-        }
+  .dropdown-menu {
+    &.show {
+      transform: translate(0px, 40px) !important;
     }
+  }
 }
