@@ -44,7 +44,12 @@ body {
   #ClientRow {
     display: none;
   }
-
+  .choices {
+    margin-bottom: 10px;
+    .remove-select {
+      vertical-align: middle;
+    }
+  }
   #genreToggle,
   #platformToggle {
     display: none;

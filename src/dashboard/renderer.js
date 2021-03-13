@@ -105,6 +105,7 @@ var dashboard = {
         Status: e.target.dataset.status,
       },
     };
+    console.log(e.target);
     ipcRenderer.invoke("updateGameStatus", game).then(function () {
       dashboard.renderMyGames();
       dashboard.getPlaylist();
