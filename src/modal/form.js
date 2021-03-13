@@ -22,13 +22,38 @@ var form = {
     });
   },
   setFormData: function () {
+    var multivals;
     ipcRenderer.invoke("get-GameById", form.itemID).then(function (game) {
       for (var index in game) {
         if (document.getElementById(index)) {
-          document.getElementById(index).value = game[index];
+          if (index === "Genre" || index === "Platform") {
+            multivals = game[index].split(",");
+            document.getElementById(index + "_Hidden").value = game[index];
+            for (var i = 0; i < multivals.length; i++) {
+              document.getElementById(index + "_Choices").innerHTML += choice({
+                parent: index,
+                value: multivals[i],
+              });
+            }
+          } else {
+            document.getElementById(index).value = game[index];
+          }
         }
       }
+      form.setChoiceListener();
     });
+  },
+  setChoiceListener: function () {
+    Array.prototype.slice
+      .call(document.getElementsByClassName("remove-select"))
+      .forEach(function (item) {
+        item.addEventListener("click", function (e) {
+          form.removeSelectValue(
+            e.target.parentNode.id,
+            e.target.parentNode.dataset.value
+          );
+        });
+      });
   },
   setFormListeners: function () {
     document
@@ -76,7 +101,7 @@ var form = {
 
     var matches = Array.prototype.slice.call(
       document.querySelectorAll(
-        `#${listElement} a[data-searchval^='${values[
+        `#${listElement} a[data-searchval*='${values[
           values.length - 1
         ].toLowerCase()}']`
       )
@@ -120,19 +145,9 @@ var form = {
     }
     document.getElementById(parent).value = "";
     document.getElementById(parent).focus();
-    Array.prototype.slice
-      .call(document.getElementsByClassName("remove-select"))
-      .forEach(function (item) {
-        item.addEventListener("click", function (e) {
-          form.removeSelectValue(
-            e.target.parentNode.id,
-            e.target.parentNode.dataset.value
-          );
-        });
-      });
+    form.setChoiceListener();
   },
   removeSelectValue: function (element, value) {
-    console.log(element, value);
     var hiddenElem = document.getElementById(element.split("_")[0] + "_Hidden"),
       hiddenElemVals = hiddenElem.value.split(",");
     for (var i = 0; i < hiddenElemVals.length; i++) {
@@ -152,18 +167,12 @@ var form = {
     for (var key of formData.keys()) {
       keys.push(key);
     }
-    /*  formData.append("Genre", document.getElementById("Genre_Hidden").value);
-    formData.append(
-      "Platform",
-      document.getElementById("Platform_Hidden").value
-    ); */
     item = {
       rows: [Object.fromEntries(formData)],
       keys: keys,
       form: formElem.getAttribute("name"),
       rowID: rowID,
     };
-    console.log(item);
     return item;
   },
   sendData: function (data) {

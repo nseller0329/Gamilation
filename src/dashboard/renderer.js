@@ -67,7 +67,7 @@ var dashboard = {
   },
   getPlaylist: function () {
     this.getMyGames().then(function (games) {
-      const statuses = ["Up Next", "Playing"];
+      const statuses = ["Up Next", "Playing", "Completed", "Unfinished"];
       document.getElementById("playList").innerHTML = playList({
         statuses: statuses,
         games: games,

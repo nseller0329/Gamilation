@@ -11,6 +11,9 @@ body {
 .bootstrapped {
   @import "~bootstrap/scss/bootstrap.scss";
 }
+.tab-content {
+  margin: 30px auto;
+}
 
 #myGamesList {
   margin-bottom: 50px;
@@ -36,6 +39,8 @@ body {
       min-height: 300px;
       min-width: 200px;
       border: 1px solid black;
+      border-radius: 20px;
+      padding: 20px;
     }
   }
 }
