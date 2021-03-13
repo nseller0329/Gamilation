@@ -44,9 +44,11 @@ class dbaccess {
 
         insertRows(rows);
     }
-    updateRowItem(table, IdField, data, params = []) {
-        var updatefields = [],
-            query, sql;
+    updateRowItem(table, data, params = [], callback) {
+        console.log('here')
+        var IdField = schema[table].idField,
+            updatefields = [],
+            query, sql, errLog = [];
         for (var index in data) {
             if (data[index]) {
                 updatefields.push(index + " = '" + data[index] + "'");
@@ -55,7 +57,16 @@ class dbaccess {
         updatefields = updatefields.map((field) => field).join(',');
         query = `UPDATE ${table} SET ${updatefields} WHERE ${IdField} = ?`;
         sql = this.db.prepare(query);
-        sql.run(params);
+
+        try {
+            sql.run(params);
+        } catch (err) {
+            errLog.push(err);
+        }
+
+        if (typeof callback === "function") {
+            callback(errLog);
+        }
     }
     runCustomSql(query, method, params = []) {
         var sql = this.db.prepare(query),

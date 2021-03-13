@@ -38,7 +38,7 @@ const createWindow = () => {
   mainWindow.maximize();
   createMainIPCs(mainWindow);
 };
-const createModal = (parent, type) => {
+const createModal = (parent, type, data) => {
   // Create the browser window.
   const modal = new BrowserWindow({
     width: 800,
@@ -51,8 +51,12 @@ const createModal = (parent, type) => {
       preload: MODAL_PRELOAD_WEBPACK_ENTRY,
     }
   });
+  let queryParams = `?type=${type}`;
+  if (data) {
+    queryParams += `&data=${data}`;
+  }
 
-  modal.loadURL(MODAL_WEBPACK_ENTRY + `?type=${type}`);
+  modal.loadURL(MODAL_WEBPACK_ENTRY + queryParams);
   if (isDev) {
     modal.webContents.openDevTools();
   }
@@ -68,6 +72,10 @@ const createMainIPCs = function (mainWindow) {
     const allRows = db.getAllRows(table);
     return allRows;
   });
+  ipcMain.handle('get-GameById', (event, itemid) => {
+    const item = db.getRowItem('games', itemid);
+    return item;
+  });
   ipcMain.handle('add-rows', (event, data) => {
     db.addRowItems(data.form, data.keys, data.rows, function (resp) {
       if (resp.length) {
@@ -77,8 +85,22 @@ const createMainIPCs = function (mainWindow) {
       }
     });
   });
-  ipcMain.on('show-modal', function (event, type) {
-    createModal(mainWindow, type);
+  ipcMain.handle('update-item', (event, data) => {
+    db.updateRowItem(data.form, data.rows[0], data.rowID, function (resp) {
+      if (resp.length) {
+        event.sender.send('notification', 'fail', 'There were some problems!' + resp);
+      } else {
+        event.sender.send('notification', 'success', 'Item(s) successfully updated!');
+      }
+    });
+  });
+  ipcMain.handle('updateGameStatus', (event, game) => {
+    console.log(game)
+    db.updateRowItem('games', game.data, game.id);
+
+  });
+  ipcMain.on('show-modal', function (event, type, data) {
+    createModal(mainWindow, type, data);
   });
 
   ipcMain.handle('api-search', async function (event, game) {
