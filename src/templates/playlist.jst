@@ -1,7 +1,8 @@
 <div class='row'>
     <%for(var i=0 ; i < statuses.length;i++){%>
+
     <div id='playlist-<%=statuses[i]%>' data-status='<%=statuses[i]%>' class=' playListCol col-md-auto'>
-        <h1><%=statuses[i]%></h1>
+            <h1><%=statuses[i]%></h1>
         <ul class="list-group list-group-flush">
             <%for(var n=0 ; n<games.length;n++){%>
             <%if(games[n].Status===statuses[i]){%>

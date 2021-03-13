@@ -21,13 +21,17 @@ var dashboard = {
     return ipcRenderer.invoke("get-all-rows", "games");
   },
   renderMyGames: function () {
+    var genres,
+      genreLabels = [];
     this.getMyGames().then(function (data) {
       document.getElementById("myGamesList").innerHTML = "";
       for (var i = 0; i < data.length; i++) {
-        var genres = data[i].Genre.split(","),
-          genreLabels = [];
-        for (var n = 0; n < genres.length; n++) {
-          genreLabels.push(icons.genreIcons[genres[n]]);
+        genreLabels = [];
+        if (data[i].Genre) {
+          genres = data[i].Genre.split(",");
+          for (var n = 0; n < genres.length; n++) {
+            genreLabels.push(icons.genreIcons[genres[n]]);
+          }
         }
         document.getElementById("myGamesList").insertAdjacentHTML(
           "beforeend",

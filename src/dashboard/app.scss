@@ -31,10 +31,12 @@ body {
 
 #playList {
   .playListCol {
-    margin: 20px;
-    min-height: 300px;
-    min-width: 200px;
-    border: 1px solid black;
+    .list-group {
+      margin: 20px;
+      min-height: 300px;
+      min-width: 200px;
+      border: 1px solid black;
+    }
   }
 }
 
