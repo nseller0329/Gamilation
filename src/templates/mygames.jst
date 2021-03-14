@@ -1,52 +1,55 @@
 <div class="card text-white bg-dark mb-3 col-md-auto">
   <div class="card-header row justify-content-between">
-    <h5><%=game.Name%> <span><%=statusIcons[game.Status]%></span></h5>
+    <h5><%=game.Name%></h5>
   </div>
-  <div class="card-body">
-    <ul class="list-group list-group-flush">
-      <li class="list-group-item list-group-item-dark">
-        Genre(s): <%for(var n=0; n< genreLabels.length;n++){%>
-        <%=genreLabels[n]%> <%}%>
-      </li>
-      <li class="list-group-item list-group-item-dark">
-        Platform(s): <%=game.Platform%>
-      </li>
-      <li class="list-group-item list-group-item-dark">
-        Format: <%=game.Format%>
-      </li>
-    </ul>
-    <input
-      type="button"
-      data-itemid="<%=game.ID%>"
-      class="editItem btn btn-sm btn-primary"
-      value="Edit Item"
-    />
-    <div class="btn-group">
-      <button
-        class="btn btn-secondary btn-sm dropdown-toggle"
-        type="button"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
-      >
-        Add to Playlist
-      </button>
-
-      <ul class="dropdown-menu">
-        <li
-          data-itemid="<%=game.ID%>"
-          data-status="Up Next"
-          class="mgUpdate dropdown-item"
-        >
-          Up Next
+  <div class="card-body row">
+    <div class="col-8">
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item list-group-item-dark">
+          Genre(s): <%for(var n=0; n< genreLabels.length;n++){%>
+          <%=genreLabels[n]%> <%}%>
         </li>
-        <li
-          data-itemid="<%=game.ID%>"
-          data-status="Playing"
-          class="mgUpdate dropdown-item"
-        >
-          Playing
+        <li class="list-group-item list-group-item-dark">
+          Platform(s): <%=game.Platform%>
+        </li>
+        <li class="list-group-item list-group-item-dark">
+          Format: <%=game.Format%>
         </li>
       </ul>
+      <input
+        type="button"
+        data-itemid="<%=game.ID%>"
+        class="editItem btn btn-sm btn-primary"
+        value="Edit Item"
+      />
+      <div class="btn-group">
+        <button
+          class="btn btn-secondary btn-sm dropdown-toggle"
+          type="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          Add to Playlist
+        </button>
+
+        <ul class="dropdown-menu">
+          <li
+            data-itemid="<%=game.ID%>"
+            data-status="Up Next"
+            class="mgUpdate dropdown-item"
+          >
+            Up Next
+          </li>
+          <li
+            data-itemid="<%=game.ID%>"
+            data-status="Playing"
+            class="mgUpdate dropdown-item"
+          >
+            Playing
+          </li>
+        </ul>
+      </div>
     </div>
+    <div class="col-4-auto"><%=statusIcons[game.Status]%></div>
   </div>
 </div>
