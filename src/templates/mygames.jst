@@ -4,25 +4,22 @@
   </div>
   <div class="card-body row">
     <div class="col-8">
-      <ul class="list-group list-group-flush">
-        <li class="list-group-item list-group-item-dark">
-          Genre(s): <%for(var n=0; n< genreLabels.length;n++){%>
-          <%=genreLabels[n]%> <%}%>
+      <ul class="gameDetails">
+        <li>
+          Genre(s):<%for(var n=0; n< genreLabels.length;n++){%>
+          <span><%=genreLabels[n]%></span><%}%>
         </li>
-        <li class="list-group-item list-group-item-dark">
-          Platform(s): <%=game.Platform%>
-        </li>
-        <li class="list-group-item list-group-item-dark">
-          Format: <%=game.Format%>
-        </li>
+        <li>Platform(s):<%for(var l=0; l< game.Platform.length;l++){%>
+          <span><%=game.Platform[l]%><%if(game.Platform.length>0 && l <game.Platform.length-1 ){%>, <%}%><%}%></span></li>
+        <li>Format: <%=game.Format%></li>
       </ul>
-      <input
-        type="button"
-        data-itemid="<%=game.ID%>"
-        class="editItem btn btn-sm btn-primary"
-        value="Edit Item"
-      />
+
       <div class="btn-group">
+        <button
+          type="button"
+          data-itemid="<%=game.ID%>"
+          class="editItem btn btn-sm btn-primary"
+        />Edit</button>
         <button
           class="btn btn-secondary btn-sm dropdown-toggle"
           type="button"
@@ -50,6 +47,11 @@
         </ul>
       </div>
     </div>
-    <div class="col-4-auto"><%=statusIcons[game.Status]%></div>
+    <div class="col-3 d-flex justify-content-center">
+      <div class="statusIcon">
+        <%=statusIcons[game.Status]%>
+        <p><%=game.Status%></p>
+      </div>
+    </div>
   </div>
 </div>

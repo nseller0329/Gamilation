@@ -2,6 +2,7 @@ import "./app.scss";
 import "bootstrap";
 import homeTab from "../templates/home.jst";
 import myGamesCard from "../templates/mygames.jst";
+import genreLegend from "../templates/genreLegend.jst";
 import playList from "../templates/playlist.jst";
 import notification from "../templates/notification.jst";
 import icons from "../common/iconMap.js";
@@ -23,6 +24,9 @@ var dashboard = {
   renderMyGames: function () {
     var genres,
       genreLabels = [];
+    document.getElementById("legend").innerHTML = genreLegend({
+      icons: icons.genreIcons,
+    });
     this.getMyGames().then(function (data) {
       document.getElementById("myGamesList").innerHTML = "";
       for (var i = 0; i < data.length; i++) {
@@ -32,6 +36,9 @@ var dashboard = {
           for (var n = 0; n < genres.length; n++) {
             genreLabels.push(icons.genreIcons[genres[n]]);
           }
+        }
+        if (data[i].Platform) {
+          data[i].Platform = data[i].Platform.split(",");
         }
         document.getElementById("myGamesList").insertAdjacentHTML(
           "beforeend",

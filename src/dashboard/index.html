@@ -71,10 +71,11 @@
             aria-labelledby="v-pills-mygames-tab"
           >
             <div class="row">
-              <h1>My Games</h1>
-              <div class="row" id="myGamesList"></div>
-              <div class="row align-items-end">
-                <div class="col-">
+              <div class="row justify-content-between">
+                <div class="col-8">
+                  <h1 class="w-50">My Games</h1>
+                </div>
+                <div class="col-2">
                   <input
                     type="button"
                     class="btn btn-success"
@@ -82,6 +83,10 @@
                     value="Add A Game"
                   />
                 </div>
+              </div>
+              <div class="row" id="myGamesList"></div>
+              <div class="row">
+                <div id="legend"></div>
               </div>
             </div>
           </div>
