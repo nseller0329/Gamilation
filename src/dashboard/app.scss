@@ -14,6 +14,9 @@ body {
 .tab-content {
   margin: 30px auto;
 }
+#mainNav {
+  margin-bottom: 10px;
+}
 #legend {
   display: table-row;
   column-count: 5;
@@ -49,7 +52,7 @@ body {
     }
     .statusIcon {
       text-align: center;
-      margin: auto;
+
       .status {
         font-weight: bold;
         font-size: xxx-large;

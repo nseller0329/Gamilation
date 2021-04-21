@@ -7,6 +7,7 @@ import playList from "../templates/playlist.jst";
 import notification from "../templates/notification.jst";
 import icons from "../common/iconMap.js";
 import dragNdrop from "./dragndrop.js";
+import pagination from "./pagination.js";
 
 var dashboard = {
   init: function () {
@@ -23,7 +24,8 @@ var dashboard = {
   },
   renderMyGames: function () {
     var genres,
-      genreLabels = [];
+      genreLabels = [],
+      gamesList = [];
     document.getElementById("legend").innerHTML = genreLegend({
       icons: icons.genreIcons,
     });
@@ -40,8 +42,8 @@ var dashboard = {
         if (data[i].Platform) {
           data[i].Platform = data[i].Platform.split(",");
         }
-        document.getElementById("myGamesList").insertAdjacentHTML(
-          "beforeend",
+        pagination.listID = "myGamesList";
+        gamesList.push(
           myGamesCard({
             game: data[i],
             genreLabels: genreLabels,
@@ -49,27 +51,48 @@ var dashboard = {
           })
         );
       }
-      Array.prototype.slice
-        .call(document.getElementsByClassName("editItem"))
-        .forEach(function (item) {
-          item.addEventListener("click", function (e) {
-            ipcRenderer.send(
-              "show-modal",
-              "edit-game",
-              e.target.dataset.itemid
-            );
-          });
+      pagination.list = gamesList;
+      pagination.setNumberOfPages();
+      pagination.loadList();
+      dashboard.addGameListListeners();
+      dashboard.addPaginationListeners();
+    });
+  },
+  addPaginationListeners: function () {
+    document.getElementById("next").onclick = function () {
+      pagination.nextPage();
+      dashboard.addGameListListeners();
+    };
+    document.getElementById("previous").onclick = function () {
+      pagination.previousPage();
+      dashboard.addGameListListeners();
+    };
+    document.getElementById("first").onclick = function () {
+      pagination.firstPage();
+      dashboard.addGameListListeners();
+    };
+    document.getElementById("last").onclick = function () {
+      pagination.lastPage();
+      dashboard.addGameListListeners();
+    };
+  },
+  addGameListListeners: function () {
+    Array.prototype.slice
+      .call(document.getElementsByClassName("editItem"))
+      .forEach(function (item) {
+        item.addEventListener("click", function (e) {
+          ipcRenderer.send("show-modal", "edit-game", e.target.dataset.itemid);
         });
-      Array.prototype.slice
-        .call(document.getElementsByClassName("mgUpdate"))
-        .forEach(function (item) {
-          item.addEventListener("click", function (e) {
-            dashboard.updateStatus(e);
-          });
-        });
-      document.getElementById("addGame").addEventListener("click", function () {
-        ipcRenderer.send("show-modal", "new-game");
       });
+    Array.prototype.slice
+      .call(document.getElementsByClassName("mgUpdate"))
+      .forEach(function (item) {
+        item.addEventListener("click", function (e) {
+          dashboard.updateStatus(e);
+        });
+      });
+    document.getElementById("addGame").addEventListener("click", function () {
+      ipcRenderer.send("show-modal", "new-game");
     });
   },
   getPlaylist: function () {
@@ -79,31 +102,34 @@ var dashboard = {
         statuses: statuses,
         games: games,
       });
-      Array.prototype.slice
-        .call(document.getElementsByClassName("playListCol"))
-        .forEach(function (item) {
-          item.addEventListener("drop", function (e) {
-            dashboard.updateStatus(e, true);
-          });
-          item.addEventListener("dragover", function (e) {
-            dragNdrop.allowDrop(e);
-          });
-        });
-      Array.prototype.slice
-        .call(document.getElementsByClassName("playListItem"))
-        .forEach(function (item) {
-          item.addEventListener("dragstart", function (e) {
-            dragNdrop.drag(e);
-          });
-        });
-      Array.prototype.slice
-        .call(document.getElementsByClassName("plUpdate"))
-        .forEach(function (item) {
-          item.addEventListener("click", function (e) {
-            dashboard.updateStatus(e);
-          });
-        });
+      dashboard.addPlaylistListeners();
     });
+  },
+  addPlaylistListeners: function () {
+    Array.prototype.slice
+      .call(document.getElementsByClassName("playListCol"))
+      .forEach(function (item) {
+        item.addEventListener("drop", function (e) {
+          dashboard.updateStatus(e, true);
+        });
+        item.addEventListener("dragover", function (e) {
+          dragNdrop.allowDrop(e);
+        });
+      });
+    Array.prototype.slice
+      .call(document.getElementsByClassName("playListItem"))
+      .forEach(function (item) {
+        item.addEventListener("dragstart", function (e) {
+          dragNdrop.drag(e);
+        });
+      });
+    Array.prototype.slice
+      .call(document.getElementsByClassName("plUpdate"))
+      .forEach(function (item) {
+        item.addEventListener("click", function (e) {
+          dashboard.updateStatus(e);
+        });
+      });
   },
   updateStatus: function (e, drop) {
     var game = {
@@ -112,7 +138,6 @@ var dashboard = {
         Status: e.target.dataset.status,
       },
     };
-    console.log(e.target);
     ipcRenderer.invoke("updateGameStatus", game).then(function () {
       dashboard.renderMyGames();
       dashboard.getPlaylist();
