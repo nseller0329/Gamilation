@@ -42,7 +42,7 @@ var dashboard = {
         if (data[i].Platform) {
           data[i].Platform = data[i].Platform.split(",");
         }
-        pagination.listID = "myGamesList";
+
         gamesList.push(
           myGamesCard({
             game: data[i],
@@ -52,6 +52,7 @@ var dashboard = {
         );
       }
       pagination.list = gamesList;
+      pagination.listID = "myGamesList";
       pagination.setNumberOfPages();
       pagination.loadList();
       dashboard.addGameListListeners();
