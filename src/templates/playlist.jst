@@ -1,6 +1,6 @@
 <div class='row'>
     <%for(var i=0 ; i < statuses.length;i++){%>
-        <div id='playlist-<%=statuses[i]%>' class='playListCol col-md-auto'>
+        <div id="playlist-<%=statuses[i].toLowerCase().replace(' ','')%>" class='playListCol col-md-auto'>
             <h1>
                 <%=statuses[i]%>
             </h1>
@@ -8,7 +8,7 @@
                 <%for(var n=0 ; n<games.length;n++){%>
                     <%if(games[n].Status===statuses[i]){%>
                         <li draggable='true' data-itemid='<%=games[n].ID%>' id='playlist-<%games[n].ID%>'
-                            class="playListItem list-group-item list-group-item-dark">
+                            class="playListItem list-group-item list-group-item-dark <%=statuses[i].toLowerCase().replace(' ','')%>">
                             <%=games[n].Name%>
                         </li>
                         <%}}%>

@@ -3,7 +3,7 @@ var icons = {
     "Up Next": '<i class="lnir lnir-power-switch status upNext"></i>',
     Playing: '<i class="lnir lnir-power-switch status playing"></i>',
     Completed: '<i class="lnir lnir-medal status completed"></i>',
-    Unplayed: '<i class="lnir llnir-power-switch status unplayed"></i>',
+    Unplayed: '<i class="lnir lnir-power-switch status unplayed"></i>',
     "Not Finished": '<i class="lnir lnir-power-switch status notFinished"></i>',
   },
   genreIcons: {
