@@ -1,59 +1,136 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Gamilation</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <title>Gamilation</title>
-</head>
-
-<body class='bootstrapped'>
-  <div class='container-fluid'>
-    <div id='notificationCenter row'></div>
-    <div class='row'>
-
-      <div class="d-flex align-items-start">
-        <div class="nav flex-column nav-pills me-3 col-sm-auto" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-          <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home"
-            type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Home</button>
-
-          <button class="nav-link" id="v-pills-mygames-tab" data-bs-toggle="pill" data-bs-target="#v-pills-mygames"
-            type="button" role="tab" aria-controls="v-pills-mygames" aria-selected="false">My Games</button>
-
-          <button class="nav-link" id="v-pills-releases-tab" data-bs-toggle="pill" data-bs-target="#v-pills-releases"
-            type="button" role="tab" aria-controls="v-pills-releases" aria-selected="false">Upcoming Releases</button>
-
-          <button class="nav-link" id="v-pills-playlist-tab" data-bs-toggle="pill" data-bs-target="#v-pills-playlist"
-            type="button" role="tab" aria-controls="v-pills-playlist" aria-selected="false">Playlist</button>
-        </div>
-
-        <div class="tab-content col-xl-auto" id="v-pills-tabContent col-auto">
-          <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
-          </div>
-          <div class="tab-pane fade" id="v-pills-mygames" role="tabpanel" aria-labelledby="v-pills-mygames-tab">
-            <div class='row'>
-              <h1> My Games</h1>
-              <div class='row' id='myGamesList'>
+  <body class="bootstrapped">
+    <div class="container-fluid">
+      <div id="notificationCenter row"></div>
+      <div class="row">
+        <ul class="nav nav-tabs" id="mainNav" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              id="v-pills-home-tab"
+              data-bs-toggle="pill"
+              data-bs-target="#v-pills-home"
+              type="button"
+              role="tab"
+              aria-controls="v-pills-home"
+              aria-selected="true"
+            >
+              Home
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="v-pills-mygames-tab"
+              data-bs-toggle="pill"
+              data-bs-target="#v-pills-mygames"
+              type="button"
+              role="tab"
+              aria-controls="v-pills-mygames"
+              aria-selected="false"
+            >
+              My Games
+            </button>
+          </li>
+          <!--        <li class="nav-item" role='presentation'><button class="nav-link" id="v-pills-releases-tab" data-bs-toggle="pill" data-bs-target="#v-pills-releases"
+            type="button" role="tab" aria-controls="v-pills-releases" aria-selected="false">Upcoming Releases</button></li> -->
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="v-pills-playlist-tab"
+              data-bs-toggle="pill"
+              data-bs-target="#v-pills-playlist"
+              type="button"
+              role="tab"
+              aria-controls="v-pills-playlist"
+              aria-selected="false"
+            >
+              Playlist
+            </button>
+          </li>
+        </ul>
+      </div>
+      <div class="row">
+        <div class="tab-content">
+          <div
+            class="tab-pane fade show active"
+            id="v-pills-home"
+            role="tabpanel"
+            aria-labelledby="v-pills-home-tab"
+          ></div>
+          <div
+            class="tab-pane fade"
+            id="v-pills-mygames"
+            role="tabpanel"
+            aria-labelledby="v-pills-mygames-tab"
+          >
+            <div class="row">
+              <div class="row justify-content-between">
+                <div class="col-8">
+                  <h1 class="w-50">My Games</h1>
+                </div>
+                <div class="col-2">
+                  <input
+                    type="button"
+                    class="btn btn-success"
+                    id="addGame"
+                    value="Add A Game"
+                  />
+                </div>
               </div>
-              <div class='row align-items-end'>
-                <div class='col-'>
-                  <input type='button' class='btn btn-success' id='addGame' value='Add A Game'></div>
+              <div class="row" id="myGamesList"></div>
+              <nav aria-label="...">
+                <ul class="pagination">
+                  <li id="previous" class="page-item disabled">
+                    <a
+                      class="page-link"
+                      href="#"
+                      tabindex="-1"
+                      aria-disabled="true"
+                      >Previous</a
+                    >
+                  </li>
+
+                  <li id="next" class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                  </li>
+                  <li id="first" class="page-item">
+                    <a class="page-link" href="#">First Page</a>
+                  </li>
+                  <li id="last" class="page-item">
+                    <a class="page-link" href="#">Last Page</a>
+                  </li>
+                </ul>
+              </nav>
+              <div class="row">
+                <div id="legend"></div>
               </div>
             </div>
           </div>
-          <div class="tab-pane fade" id="v-pills-releases" role="tabpanel" aria-labelledby="v-pills-releases-tab">...
-          </div>
-          <div class="tab-pane fade" id="v-pills-playlist" role="tabpanel" aria-labelledby="v-pills-playlist-tab">
-            <div id='playList'></div>
+          <!--   <div class="tab-pane fade" id="v-pills-releases" role="tabpanel" aria-labelledby="v-pills-releases-tab">...
+          </div>-->
+          <div
+            class="tab-pane fade"
+            id="v-pills-playlist"
+            role="tabpanel"
+            aria-labelledby="v-pills-playlist-tab"
+          >
+            <div id="playList"></div>
           </div>
         </div>
       </div>
     </div>
-</body>
-<footer>
-  <!--<div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a
+  </body>
+  <footer>
+    <!--<div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a
       href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
   <div>Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a
       href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div> -->
-</footer>
-
+  </footer>
 </html>

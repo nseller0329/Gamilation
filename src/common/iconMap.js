@@ -1,25 +1,25 @@
 var icons = {
-    statusIcons: {
-        'Up Next': '<i style="color:yellow;font-weight:bold;" class="lnir lnir-power-switch"></i>',
-        Playing: '<i style="color:green;font-weight:bold;" class="lnir lnir-power-switch"></i>',
-        Completed: '<i class="lnir lnir-medal"></i>',
-        Unplayed: '<i  style="font-weight:bold;"class="lnir llnir-power-switch"></i>',
-        'Not Finished': '<i style="color:red;font-weight:bold;"  class="lnir lnir-power-switch"></i>'
-    },
-    genreIcons: {
-        Action: '<i class="lnir lnir-bolt-alt"></i>',
-        Adventure: '<i class="lnir lnir-backpack"></i>',
-        RPG: '<i class="lnir lnir-library"></i>',
-        Strategy: '<i class="lnir lnir-rook"></i>',
-        Shooter: '<i class="lnir lnir-target"></i>',
-        Simulation: '<i class="lnir lnir-strategy"></i>',
-        Puzzle: '<i class="lnir lnir-cubes"></i>',
-        Arcade: '<i class="lnir lnir-diamond-alt"></i>',
-        Platformer: '<i class="lnir lnir-menu-alt-4"></i>',
-        Racing: '<i class="lnir lnir-car-alt"></i>',
-        Sports: '<i class="lnir lnir-basketball"></i>',
-        'Massively Multiplayer': '<i class="lnir lnir-network"></i>',
-        Fighting: '<i class="lnir lnir-users-2"></i>',
-    }
+  statusIcons: {
+    "Up Next": '<i class="lnir lnir-power-switch status upNext"></i>',
+    Playing: '<i class="lnir lnir-power-switch status playing"></i>',
+    Completed: '<i class="lnir lnir-medal status completed"></i>',
+    Unplayed: '<i class="lnir lnir-power-switch status unplayed"></i>',
+    "Not Finished": '<i class="lnir lnir-power-switch status notFinished"></i>',
+  },
+  genreIcons: {
+    Action: '<i class="lnir lnir-bolt-alt genre"><sub></sub></i>',
+    Adventure: '<i class="lnir lnir-backpack genre"></i>',
+    RPG: '<i class="lnir lnir-library genre"></i>',
+    Strategy: '<i class="lnir lnir-rook genre"></i>',
+    Shooter: '<i class="lnir lnir-target genre"></i>',
+    Simulation: '<i class="lnir lnir-strategy genre"></i>',
+    Puzzle: '<i class="lnir lnir-cubes genre"></i>',
+    Arcade: '<i class="lnir lnir-diamond-alt genre"></i>',
+    Platformer: '<i class="lnir lnir-menu-alt-4 genre"></i>',
+    Racing: '<i class="lnir lnir-car-alt genre"></i>',
+    Sports: '<i class="lnir lnir-basketball genre"></i>',
+    "Massively Multiplayer": '<i class="lnir lnir-network genre"></i>',
+    Fighting: '<i class="lnir lnir-users-2 genre"></i>',
+  },
 };
 export default icons;
